@@ -1622,7 +1622,7 @@ def main():
     # Also note that 'HPCJob' check is not part of iDRAC rather it uses Univa Grid Engine (UGE) REST API to enquire the job related metrics running in the HPC 
     
     #REMOVEME
-    #checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
+    checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
