@@ -908,7 +908,7 @@ def calc_currentjob_power(client):
             cpuCores = list(res.get_points())[0]['CPUCores']
             totalNodes = list(res.get_points())[0]['total_nodes']
             startTime = list(res.get_points())[0]['startTime']
-            found = 0;
+            found = 0`                                                                                                                                                                                                                                                                      
             totalCores += cpuCores
 
             if totalNodes > 1:
