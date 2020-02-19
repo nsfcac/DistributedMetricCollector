@@ -1626,7 +1626,7 @@ def main():
 
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['MEMPWR','CPUPWR']
+    #checkList = ['MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1676,11 +1676,9 @@ def launch (taskList,session,startTime,hostList):
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
     objList, error_list =  parallelizeTasks(taskList,session)
     
-    print("\nstart cluster metric\n")
-    print (objList)
-    print("\nstart cluster metric\n")
-    
-    return 
+    #print("\nstart cluster metric\n")
+    #print (objList)
+    #print("\nstart cluster metric\n") 
 
     jsonObjList = build_cluster_metric (objList,hostList,ts)
 
