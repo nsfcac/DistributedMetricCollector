@@ -1679,6 +1679,8 @@ def launch (taskList,session,startTime,hostList):
     print("\nstart cluster metric\n")
     print (objList)
     print("\nstart cluster metric\n")
+    
+    return 
 
     jsonObjList = build_cluster_metric (objList,hostList,ts)
 
