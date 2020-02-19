@@ -1675,11 +1675,13 @@ def launch (taskList,session,startTime,hostList):
 
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
     objList, error_list =  parallelizeTasks(taskList,session)
-    jsonObjList = build_cluster_metric (objList,hostList,ts)
-    print("\nstart cluster metric\n")
-    print (jsonObjList)
-    print("\nstart cluster metric\n")
     
+    print("\nstart cluster metric\n")
+    print (objList)
+    print("\nstart cluster metric\n")
+
+    jsonObjList = build_cluster_metric (objList,hostList,ts)
+
     print ("\n\ncomplete data:",len(objList))
     jsonObjList += objList
     print ("\nUnified plus jobs:",len(jsonObjList))
