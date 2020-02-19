@@ -57,6 +57,44 @@ def get_bmc_health(host,conn_time_out,read_time_out,session):
         return None, str(e)
 
 
+###############################################################################################                                                                            
+# Get CPU POWER USAGE                                                                                                                                                  
+###############################################################################################
+
+def get_cpupowerusage(host,conn_time_out,read_time_out,session):
+    try:
+        url = 'http://' + host + ':8000/redfish/v1/Systems/1/Processors/Power'
+
+        response = session.get(url, timeout=(conn_time_out,read_time_out))
+
+        response.raise_for_status()
+        data = response.json()
+
+        return data[u"CPUCurrentPowerUsage"],data[u"CPUMaxPowerUsage"],data[u"CPUMinPowerUsage"],data[u"CPUAveragePowerUsage"], str(None)
+
+    except requests.exceptions.RequestException as e:
+        return None,None,None,None, str(e)
+
+
+
+###############################################################################################                                                                            
+# Get CPU POWER USAGE                                                                                                                                                  
+###############################################################################################
+
+def get_mempowerusage(host,conn_time_out,read_time_out,session):
+    try:
+        url = 'http://'+host+':8000/redfish/v1/Systems/1/Memory/Power'
+        response = session.get(url, timeout=(conn_time_out,read_time_out))
+
+        response.raise_for_status()
+        data = response.json()
+
+        return data[u"MemoryCurrentPowerUsage"],data[u"MemoryMaxPowerUsage"],data[u"MemoryMinPowerUsage"],data[u"MemoryAveragePowerUsage"], str(None)
+
+    except requests.exceptions.RequestException as e:
+        return None,None,None,None, str(e)
+
+
 ###############################################################################################                                                                                                               
 # Fetch system health metrics including host health, cpu health, and memory health.                                                                                                                      
 ###############################################################################################
@@ -270,6 +308,68 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
 
 
     # Fetch the monitoring data based on check type                                                                                                               
+
+    ###############################################################################################                                                                                                           
+    # Process CPU POWER check type                                                                                                                                                                           
+    ###############################################################################################
+    if checkType == 'CPUPWR':
+        # starting time of check processing
+        start_time = time.time()
+
+        # retry=0 indicates first time call
+        #retry=0
+        
+        # copy original time_out
+        #initial_timeout = time_out
+        
+        # get cpu power usage by passing host, timeout, and session objects
+        cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage, error  = get_cpupowerusage(host,conn_time_out,read_time_out,session)
+        
+        # total processing time
+        tot_time=time.time() - start_time
+        
+        # first error (if any) is copied
+        # initial_error = error
+
+        # In case of no error, response is recieved successfully without any retry
+        if error == 'None':
+            # power usage metric is built and result is returned into a dictionary
+            mon_data_dict = build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
+            # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            json_node_list.append(mon_data_dict)
+            # error ('None' in this case) with host and checktype is appended to global error list
+            error_list.append([host, checkType, error])
+
+    ###############################################################################################                                                                                                           
+    # Process MEMORY POWER check type                                                                                                                                                                           
+    ###############################################################################################
+    if checkType == 'MEMPWR':
+        # starting time of check processing
+        start_time = time.time()
+
+        # retry=0 indicates first time call
+        #retry=0
+        
+        # copy original time_out
+        #initial_timeout = time_out
+        
+        # get memory power usage by passing host, timeout, and session objects
+        mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage, error  = get_mempowerusage(host,conn_time_out,read_time_out,session)
+        
+        # total processing time
+        tot_time=time.time() - start_time
+        
+        # first error (if any) is copied
+        # initial_error = error
+
+        # In case of no error, response is recieved successfully without any retry
+        if error == 'None':
+            # power usage metric is built and result is returned into a dictionary
+            mon_data_dict = build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
+            # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            json_node_list.append(mon_data_dict)
+            # error ('None' in this case) with host and checktype is appended to global error list
+            error_list.append([host, checkType, error])
 
     ###############################################################################################                                                                                                           
     # Process "Power" check type                                                                                                                                                                           
@@ -660,6 +760,38 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
             timeStamp = datetime.datetime.now().isoformat()
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
             build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp)
+
+###############################################################################################                                                                                                               
+# Builds CPU power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
+############################################################################################### 
+
+def build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error):
+    host.replace('100','101')
+    mon_data_dict = {'measurement':'CPU_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    
+    mon_data_dict['fields']['CPUAveragePowerUsage'] = cpu_avg_pwr_usage
+    mon_data_dict['fields']['CPUCurrentPowerUsage'] = cpu_cur_pwr_usage
+    mon_data_dict['fields']['CPUMinPowerUsage'] = cpu_min_pwr_usage
+    mon_data_dict['fields']['CPUMaxPowerUsage'] = cpu_max_pwr_usage
+
+    mon_data_dict['fields']['error'] =error
+    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    return mon_data_dict
+
+def build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error):
+    host.replace('100','101')
+    mon_data_dict = {'measurement':'Memory_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    
+    mon_data_dict['fields']['MemoryAveragePowerUsage'] = mem_avg_pwr_usage
+    mon_data_dict['fields']['MemoryCurrentPowerUsage'] = mem_cur_pwr_usage
+    mon_data_dict['fields']['MemoryMinPowerUsage'] = mem_min_pwr_usage
+    mon_data_dict['fields']['MemoryMaxPowerUsage'] = mem_max_pwr_usage
+
+    mon_data_dict['fields']['error'] =error
+    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    return mon_data_dict
             
 def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
     jsonJobList = []
@@ -1396,12 +1528,10 @@ def core_to_threads (input_data,session):
 
         return json_node_list, error_list
         
-        return None, None
     except Exception as e:
         #error_list.append([host, e])
-       # print (e)
         #return json_node_list, error_list
-        return None,None
+        return None,e
 ###########################################################################################
 # The following function accepts tasklist as input_data and session objects. This function#
 # creates a pool of "cores" and divide the workload among cores nearly even. In our case, #
@@ -1468,7 +1598,7 @@ def  parallelizeTasks (input_data,session):
 
         return node_json_list, node_error_list
     except Exception as e:
-        #node_error_list.append([e])
+        node_error_list.append([e])
         return node_json_list, node_error_list
         
 def main():
@@ -1491,11 +1621,12 @@ def main():
     #The following is the list of high level checks i.e. some checks will be divided into sub-checks e.g. HostHealthRollup consists of three health metric: Host Health, CPU health, and Memory Health
     # Also note that 'HPCJob' check is not part of iDRAC rather it uses Univa Grid Engine (UGE) REST API to enquire the job related metrics running in the HPC 
     
-    checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power']
+    #REMOVEME
+    #checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    # checkList = ['HPCJob']
+    checkList = ['MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1511,6 +1642,11 @@ def main():
             # as HPCJob check is not part of iDRAC so it will be considered single task
             if check == 'HPCJob':
                 taskList.append([hostList,check])
+                break
+            elif check == 'MEMPWR' or check == 'CPUPWR':
+                hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
+                for h in hlist:
+                    taskList.append([h,check])        
                 break
             taskList.append([host,check])
 
@@ -1540,9 +1676,11 @@ def launch (taskList,session,startTime,hostList):
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
     objList, error_list =  parallelizeTasks(taskList,session)
     jsonObjList = build_cluster_metric (objList,hostList,ts)
+    print("\nstart cluster metric\n")
+    print (jsonObjList)
+    print("\nstart cluster metric\n")
     
-    
-    print ("\ncomplete data:",len(objList))
+    print ("\n\ncomplete data:",len(objList))
     jsonObjList += objList
     print ("\nUnified plus jobs:",len(jsonObjList))
    
@@ -1688,7 +1826,7 @@ def build_cluster_metric (objList,hostList,ts):
     jsonObjSystemMetricList = []
                 
     for host in hostList:
-        mon_data_dict = {'measurement':'cluster_unified_metrics','tags':{'host':None},'time':ts,'fields':{'power_state':None,'jobID':None,'CPUCores':None,'led_indicator':None,'bmc_health_status':None,'inlet_health_status':None,'host_health_status':None,'cpu_health_status':None,'memory_health_status':None,'cpuusage':None,'memoryusage':None,'fan1_health':None,'fan2_health':None,'fan3_health':None,'fan4_health':None,'fan1_speed':None,'fan2_speed':None,'fan3_speed':None,'fan4_speed':None,'CPU1_temp':None,'CPU2_temp':None,'inlet_health':None,'inlet_temp':None,'powerusage_watts':None}}
+        mon_data_dict = {'measurement':'cluster_unified_metrics','tags':{'host':None},'time':ts,'fields':{'power_state':None,'jobID':None,'CPUCores':None,'led_indicator':None,'bmc_health_status':None,'inlet_health_status':None,'host_health_status':None,'cpu_health_status':None,'memory_health_status':None,'cpuusage':None,'memoryusage':None,'fan1_health':None,'fan2_health':None,'fan3_health':None,'fan4_health':None,'fan1_speed':None,'fan2_speed':None,'fan3_speed':None,'fan4_speed':None,'CPU1_temp':None,'CPU2_temp':None,'inlet_health':None,'inlet_temp':None,'powerusage_watts':None,'CPUAveragePowerUsage':None,'CPUCurrentPowerUsage':None,'CPUMinPowerUsage':None,'CPUMaxPowerUsage':None,'MemoryAveragePowerUsage':None,'MemoryCurrentPowerUsage':None,'MemoryMinPowerUsage':None,'MemoryMaxPowerUsage':None}}
         for obj in objList:
             if 'host'not in obj['tags']:
                 continue
@@ -1756,6 +1894,17 @@ def build_cluster_metric (objList,hostList,ts):
                         mon_data_dict['fields']['inlet_temp'] = 0
                 elif obj['measurement'] == 'Node_Power_Usage':
                     mon_data_dict['fields']['powerusage_watts'] = obj['fields']['powerusage_watts']
+                elif obj['measurement'] == 'CPU_Power_Usage':
+                    mon_data_dict['fields']['CPUAveragePowerUsage'] = obj['fields']['CPUAveragePowerUsage']
+                    mon_data_dict['fields']['CPUCurrentPowerUsage'] = obj['fields']['CPUCurrentPowerUsage']
+                    mon_data_dict['fields']['CPUMinPowerUsage'] = obj['fields']['CPUMinPowerUsage']
+                    mon_data_dict['fields']['CPUMaxPowerUsage'] = obj['fields']['CPUMaxPowerUsage']
+                elif obj['measurement'] == 'Memory_Power_Usage':
+                    mon_data_dict['fields']['MemoryAveragePowerUsage'] = obj['fields']['MemoryAveragePowerUsage']
+                    mon_data_dict['fields']['MemoryCurrentPowerUsage'] = obj['fields']['MemoryCurrentPowerUsage']
+                    mon_data_dict['fields']['MemoryMinPowerUsage'] = obj['fields']['MemoryMinPowerUsage']
+                    mon_data_dict['fields']['MemoryMaxPowerUsage'] = obj['fields']['MemoryMaxPowerUsage']
+
         jsonObjSystemMetricList.append( mon_data_dict)
     #print ('\nSystem Metrics: ',len(jsonObjSystemMetricList))
     writeDF(jsonObjSystemMetricList)
