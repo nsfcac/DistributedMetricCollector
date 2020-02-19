@@ -766,7 +766,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
 ############################################################################################### 
 
 def build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error):
-    host.replace('100','101')
+    host = host.replace('100','101')
     mon_data_dict = {'measurement':'CPU_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
@@ -780,7 +780,7 @@ def build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_
     return mon_data_dict
 
 def build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error):
-    host.replace('100','101')
+    host = host.replace('100','101')
     mon_data_dict = {'measurement':'Memory_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
