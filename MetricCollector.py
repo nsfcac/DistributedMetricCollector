@@ -33,7 +33,8 @@ except requests.exceptions.Timeout as errt:
 except requests.exceptions.RequestException as err:
     print ("OOps: Something Else",err)
 '''
-
+userName = ""
+passwd = ""
 
 ###############################################################################################                                                                            
 # Get BMC health metric                                                                                                                                                    
@@ -44,7 +45,7 @@ def get_bmc_health(host,conn_time_out,read_time_out,session):
         url = 'https://' + host + '/redfish/v1/Managers/iDRAC.Embedded.1'
         #session = requests.Session()
 
-        response = session.get(url, verify=False, auth=('username','password'), timeout=(conn_time_out,read_time_out))
+        response = session.get(url, verify=False, auth=(user,passwd), timeout=(conn_time_out,read_time_out))
 
         response.raise_for_status()
         data = response.json()
@@ -104,7 +105,7 @@ def get_system_health(host,conn_time_out,read_time_out,session):
         url = "https://" + host + "/redfish/v1/Systems/System.Embedded.1"
         #session = requests.Session()
         
-        response = session.get(url,verify=False, auth=('username','password'), timeout=(conn_time_out,read_time_out))
+        response = session.get(url,verify=False, auth=(userName,passwd), timeout=(conn_time_out,read_time_out))
         
         response.raise_for_status()
         
@@ -131,7 +132,7 @@ def get_thermal(host,conn_time_out,read_time_out,session):
         url = "https://" + host + "/redfish/v1/Chassis/System.Embedded.1/Thermal/"
         #session = requests.Session()                                                                                                                                                                        
 
-        response = session.get(url,verify=False, auth=('username','password'), timeout=(conn_time_out,read_time_out))
+        response = session.get(url,verify=False, auth=(userName,passwd), timeout=(conn_time_out,read_time_out))
         response.raise_for_status()
         data = response.json()
 
@@ -247,7 +248,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         url = "https://" + host + "/redfish/v1/Chassis/System.Embedded.1/Power/"
         #session = requests.Session()
 
-        response = session.get(url,verify=False, auth=('username','password'), timeout=(conn_time_out,read_time_out))
+        response = session.get(url,verify=False, auth=(userName,passwd), timeout=(conn_time_out,read_time_out))
         response.raise_for_status()
         data = response.json()
         
@@ -1609,6 +1610,15 @@ def main():
 
     with open('/home/bmc_iplist.txt','r') as bmc_file:
         hostList=json.load(bmc_file)
+
+    # Read BMC Credentials:
+    with open('/home/bmc_cred.txt','r') as bmc_cred:
+        bmcCred=json.load(bmc_cred)
+    userName = bmc_cred[0]
+    passwd = bmc_cred[1]
+    println ("User: ",userName)
+    println ("Password: ",passwd)
+    return
 
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
     # KnownProblematicBMCs = []
