@@ -1607,7 +1607,8 @@ def main():
     # List of hard coded IP addresses of iDracs (13G)
 
     hostList = []
-
+    bmcCred = []
+    
     with open('/home/bmc_iplist.txt','r') as bmc_file:
         hostList=json.load(bmc_file)
 
