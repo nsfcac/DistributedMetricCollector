@@ -1608,17 +1608,17 @@ def main():
 
     hostList = []
     bmcCred = []
-    
+
     with open('/home/bmc_iplist.txt','r') as bmc_file:
         hostList=json.load(bmc_file)
 
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
         bmcCred=json.load(bmc_cred)
-    userName = bmc_cred[0]
-    passwd = bmc_cred[1]
-    println ("User: ",userName)
-    println ("Password: ",passwd)
+    userName = bmcCred[0]
+    passwd = bmcCred[1]
+    print("\nUser: ",userName)
+    print ("\nPassword: ",passwd)
     return
 
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
