@@ -1463,7 +1463,7 @@ def build_cpu_temperature_metric(cpukey,tempval, host):
 
     # mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['Reading'] = tempval
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
     return mon_data_dict
 
 
@@ -1475,7 +1475,7 @@ def build_inlet_temperature_metric(inlet_key,inlet_val, host):
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
     
     mon_data_dict['fields']['Reading'] = inlet_val
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
     return mon_data_dict
 
        
@@ -1486,7 +1486,7 @@ def build_inlet_temperature_metric(inlet_key,inlet_val, host):
 def build_power_usage_metric(power_usage,host):
     mon_data_dict = {'measurement':'Power','tags':{'Sensor':'NodePower','NodeID':host},'time':None,'fields':{}}
     mon_data_dict['fields']['Reading'] = power_usage
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
     return mon_data_dict
     
 
@@ -1692,7 +1692,7 @@ def launch (taskList,session,startTime,hostList):
             print (obj)
             print("\n\n")
     return
-             
+
     print ("\n\nTotal Metrics:",len(objList))
     jsonObjList += objList
     print ("\n\nMetrics:",objList)
