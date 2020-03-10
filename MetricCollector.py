@@ -1687,11 +1687,16 @@ def launch (taskList,session,startTime,hostList):
     #print("\nstart cluster metric\n") 
 
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
-
+    for obj in objList:
+        if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+            print (obj)
+            print("\n\n")
+    return
+             
     print ("\n\nTotal Metrics:",len(objList))
-    jsonObjList = objList
+    jsonObjList += objList
     print ("\n\nMetrics:",objList)
-    return   
+       
         
         # Log of (sheets) responses is created for all checks except HPCJob
     '''
