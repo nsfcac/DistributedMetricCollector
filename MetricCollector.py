@@ -45,7 +45,7 @@ def get_bmc_health(host,conn_time_out,read_time_out,session):
         url = 'https://' + host + '/redfish/v1/Managers/iDRAC.Embedded.1'
         #session = requests.Session()
 
-        response = session.get(url, verify=False, auth=(user,passwd), timeout=(conn_time_out,read_time_out))
+        response = session.get(url, verify=False, auth=(userName,passwd), timeout=(conn_time_out,read_time_out))
 
         response.raise_for_status()
         data = response.json()
@@ -397,60 +397,61 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         # In case of no error, response is recieved successfully without any retry
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
-            mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
-            # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-            json_node_list.append(mon_data_dict)
-            # error ('None' in this case) with host and checktype is appended to global error list
-            error_list.append([host, checkType, error])
-        else:
-            # First retry
-            retry += 1
-            #print ("\nRetry:",retry,"Error:",error)
-            # As failure has occurred so it is produent to make a quick retry
-            # so a retry with original timeout is done (i.e. retry=1)
-            #time_out = initial_timeout*retry
-            # get power usage
-            power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
-            
-            # check if error = None
-            if error == 'None':
-                # if so , updated the total time
-                tot_time=time.time() - start_time
-                #build power usage metric with retry = 1 i.e. First Retry Success
-                mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
-                # append the monitoring data (as dict)into global json_node_list
+            if power_usage != None:
+                mon_data_dict = build_power_usage_metric(power_usage,host)
+                # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
                 json_node_list.append(mon_data_dict)
-                # Final error=None and Initial Error are concatednated so that 
-                # we can get trace back why the request fail at first instance
-                #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                # error is appended to global error list
+                # error ('None' in this case) with host and checktype is appended to global error list
                 error_list.append([host, checkType, error])
-            else:
-                # Second retry
-                retry += 1
-                #print ("\nRetry:",retry,"Error:",error)                                                                                    
-                #time_out = initial_timeout*retry
-                power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
+        # else:
+        #     # First retry
+        #     retry += 1
+        #     #print ("\nRetry:",retry,"Error:",error)
+        #     # As failure has occurred so it is produent to make a quick retry
+        #     # so a retry with original timeout is done (i.e. retry=1)
+        #     #time_out = initial_timeout*retry
+        #     # get power usage
+        #     power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
+            
+        #     # check if error = None
+        #     if error == 'None':
+        #         # if so , updated the total time
+        #         tot_time=time.time() - start_time
+        #         #build power usage metric with retry = 1 i.e. First Retry Success
+        #         mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
+        #         # append the monitoring data (as dict)into global json_node_list
+        #         json_node_list.append(mon_data_dict)
+        #         # Final error=None and Initial Error are concatednated so that 
+        #         # we can get trace back why the request fail at first instance
+        #         #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #         # error is appended to global error list
+        #         error_list.append([host, checkType, error])
+        #     else:
+        #         # Second retry
+        #         retry += 1
+        #         #print ("\nRetry:",retry,"Error:",error)                                                                                    
+        #         #time_out = initial_timeout*retry
+        #         power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
 
-                if error == 'None':
-                    tot_time=time.time() - start_time
-                    mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
-                else:
-                    # Third retry
-                    retry += 1
-                    #print ("\nRetry:",retry,"Error:",error)                                                                                
-                    #time_out = initial_timeout*retry
-                    power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
-                    if error != 'None':
-                        retry = None
-                    tot_time=time.time() - start_time
-                    mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
+        #         if error == 'None':
+        #             tot_time=time.time() - start_time
+        #             mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
+        #         else:
+        #             # Third retry
+        #             retry += 1
+        #             #print ("\nRetry:",retry,"Error:",error)                                                                                
+        #             #time_out = initial_timeout*retry
+        #             power_usage, pwr_thresholds, error  = get_powerusage(host,conn_time_out,read_time_out,session)
+        #             if error != 'None':
+        #                 retry = None
+        #             tot_time=time.time() - start_time
+        #             mon_data_dict = build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
    
     ###############################################################################################                                                                                                           
     # Process "Thermal" check                                                                                                                                                                               
@@ -467,111 +468,123 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         #initial_error = error
 
         if error == 'None':
-            mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host, checkType, error])
+            if cpu_temperature != None:
+                cpukeys = cpu_temperature.keys()
+                cpuvals = cpu_temperature.values()
+                for (k,v) in zip(cpukeys, cpuvals):
+                    mon_data_dict = build_cpu_temperature_metric(k, v, host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
 
-            mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host, checkType, error])
+            if inlet_temp != None:
+                cpukeys = inlet_temp.keys()
+                cpuvals = inlet_temp.values()
+                for (k,v) in zip (cpukeys,cpuvals):
+                    mon_data_dict = build_inlet_temperature_metric(k,v, host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
             
             mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
-            mon_data_dict = build_fanspeed_metric(fan_speed,tot_time,host,fan_speed_thresholds,retry,error)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host, checkType, error])
+            if fan_speed != None:
+                fankeys = fan_speed.keys()
+                fanvals = fan_speed.values()
+                for k,v in zip(fankeys,fanvals):
+                    mon_data_dict = build_fanspeed_metric(k,v,host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
 
             mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
-        else:
-            retry += 1
-            #print ("\nRetry:",retry,"Error:",error)
-            cpu_temperature, inlet_temp, fan_speed,fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
-            if error =='None':
-                tot_time=time.time() - start_time
+        # else:
+        #     retry += 1
+        #     #print ("\nRetry:",retry,"Error:",error)
+        #     cpu_temperature, inlet_temp, fan_speed,fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
+        #     if error =='None':
+        #         tot_time=time.time() - start_time
 
-                mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
-                json_node_list.append(mon_data_dict)
-                # error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         # error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
                 
-                mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_fanspeed_metric(fan_speed,tot_time,host, fan_speed_thresholds,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_fanspeed_metric(fan_speed,tot_time,host, fan_speed_thresholds,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host, retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
-            else:
-                retry += 1
-                #print ("\nRetry:",retry,"Error:",error)
-                #time_out = initial_timeout*retry
-                cpu_temperature, inlet_temp,fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
-                if error =='None':
-                    tot_time=time.time() - start_time
+        #         mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host, retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
+        #     else:
+        #         retry += 1
+        #         #print ("\nRetry:",retry,"Error:",error)
+        #         #time_out = initial_timeout*retry
+        #         cpu_temperature, inlet_temp,fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
+        #         if error =='None':
+        #             tot_time=time.time() - start_time
 
-                    mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
                     
-                    mon_data_dict = build_fanspeed_metric(fan_speed,tot_time,host, fan_speed_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_fanspeed_metric(fan_speed,tot_time,host, fan_speed_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
                     
-                    mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-                else:
-                    retry += 1
-                    #print ("\nRetry:",retry,"Error:",error)
-                    #time_out = initial_timeout*retry
-                    cpu_temperature, inlet_temp,fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
+        #             mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
+        #         else:
+        #             retry += 1
+        #             #print ("\nRetry:",retry,"Error:",error)
+        #             #time_out = initial_timeout*retry
+        #             cpu_temperature, inlet_temp,fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health, error  = get_thermal(host,conn_time_out,read_time_out,session)
                     
-                    if error != 'None':
-                        retry = None
+        #             if error != 'None':
+        #                 retry = None
 
-                    tot_time=time.time() - start_time
+        #             tot_time=time.time() - start_time
 
-                    mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict1 = build_fanspeed_metric(fan_speed,tot_time,host,fan_speed_thresholds,retry,error)
-                    json_node_list.append(mon_data_dict1)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict1 = build_fanspeed_metric(fan_speed,tot_time,host,fan_speed_thresholds,retry,error)
+        #             json_node_list.append(mon_data_dict1)
+        #             error_list.append([host, checkType, error])
                     
-                    mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
     ###############################################################################################                                                                                                           
     # Process "Host", "CPU", and 'Memory" checks                                                                                                                                                              
@@ -1386,27 +1399,27 @@ def get_hostip(hostname):
 # Builds fan speed metric by encapsulating the fan speed in RPM and other infos into dictionary                                                                                                               
 ############################################################################################### 
 
-def build_fanspeed_metric(fan_speed,tot_time,host,fan_speed_thresholds,retry,error):
-    mon_data_dict = {'measurement':'Fan_Speed','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+def build_fanspeed_metric(fankey,val,host):
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey,'host':host},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
-    if fan_speed != None:
-        fankeys = fan_speed.keys()
-        fanvals = fan_speed.values()
-        for k,v in zip(fankeys,fanvals):
-            mon_data_dict['fields'][k] = v
+    # if fan_speed != None:
+    #     fankeys = fan_speed.keys()
+    #     fanvals = fan_speed.values()
+    #     for k,v in zip(fankeys,fanvals):
+    #         mon_data_dict['fields'][k] = v
     
 
-    mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['retry'] = retry
     
-    if fan_speed_thresholds != None:
-        mon_data_dict['fields']['fanLowerThresholdCritical'] = fan_speed_thresholds['fanLowerThresholdCritical']
-        #mon_data_dict['fields']['fanLowerThresholdNonCritical'] = fan_speed_thresholds['fanLowerThresholdNonCritical']
-        mon_data_dict['fields']['fanUpperThresholdCritical'] = fan_speed_thresholds['fanUpperThresholdCritical']
-        #mon_data_dict['fields']['fanUpperThresholdNonCritical'] = fan_speed_thresholds['fanUpperThresholdNonCritical']
-        mon_data_dict['fields']['fanLowerThresholdNonCritical'] = 'None'
-        mon_data_dict['fields']['fanUpperThresholdNonCritical'] = 'None'
-    mon_data_dict['fields']['error'] =error
+    # if fan_speed_thresholds != None:
+    #     mon_data_dict['fields']['fanLowerThresholdCritical'] = fan_speed_thresholds['fanLowerThresholdCritical']
+    #     #mon_data_dict['fields']['fanLowerThresholdNonCritical'] = fan_speed_thresholds['fanLowerThresholdNonCritical']
+    #     mon_data_dict['fields']['fanUpperThresholdCritical'] = fan_speed_thresholds['fanUpperThresholdCritical']
+    #     #mon_data_dict['fields']['fanUpperThresholdNonCritical'] = fan_speed_thresholds['fanUpperThresholdNonCritical']
+    #     mon_data_dict['fields']['fanLowerThresholdNonCritical'] = 'None'
+    #     mon_data_dict['fields']['fanUpperThresholdNonCritical'] = 'None'
+    mon_data_dict['fields']['Reading'] = val
     mon_data_dict['time'] = datetime.datetime.now().isoformat()
 
     return mon_data_dict
@@ -1434,23 +1447,23 @@ def build_fanhealth_metric(fan_health,tot_time,host,retry,error):
 # Builds cpu temperature metric by encapsulating the cpu temperature and other infos into dictionary                                                                                                          
 ###############################################################################################  
 
-def build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_thresholds,retry,error):
-    mon_data_dict = {'measurement':'CPU_Temperature','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    if cpu_temperature != None:
-        cpukeys = cpu_temperature.keys()
-        cpuvals = cpu_temperature.values()
-        for (k,v) in zip(cpukeys, cpuvals):
-            mon_data_dict['fields'][k] = v
+def build_cpu_temperature_metric(cpukey,tempval, host):
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':cpukey,'host':host},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # if cpu_temperature != None:
+    #     cpukeys = cpu_temperature.keys()
+    #     cpuvals = cpu_temperature.values()
+    #     for (k,v) in zip(cpukeys, cpuvals):
+    #         mon_data_dict['fields'][k] = v
 
-    if cpu_temp_thresholds != None:
-        mon_data_dict['fields']['cpuLowerThresholdCritical'] = cpu_temp_thresholds['cpuLowerThresholdCritical'] 
-        mon_data_dict['fields']['cpuLowerThresholdNonCritical'] = cpu_temp_thresholds['cpuLowerThresholdNonCritical']
-        mon_data_dict['fields']['cpuUpperThresholdCritical'] = cpu_temp_thresholds['cpuUpperThresholdCritical']
-        mon_data_dict['fields']['cpuUpperThresholdNonCritical'] = cpu_temp_thresholds['cpuUpperThresholdNonCritical']
+    # if cpu_temp_thresholds != None:
+    #     mon_data_dict['fields']['cpuLowerThresholdCritical'] = cpu_temp_thresholds['cpuLowerThresholdCritical'] 
+    #     mon_data_dict['fields']['cpuLowerThresholdNonCritical'] = cpu_temp_thresholds['cpuLowerThresholdNonCritical']
+    #     mon_data_dict['fields']['cpuUpperThresholdCritical'] = cpu_temp_thresholds['cpuUpperThresholdCritical']
+    #     mon_data_dict['fields']['cpuUpperThresholdNonCritical'] = cpu_temp_thresholds['cpuUpperThresholdNonCritical']
 
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
+    # mon_data_dict['fields']['retry'] = retry
+    mon_data_dict['fields']['Reading'] = tempval
     mon_data_dict['time'] = datetime.datetime.now().isoformat()
     return mon_data_dict
 
@@ -1459,23 +1472,10 @@ def build_cpu_temperature_metric(cpu_temperature,tot_time,host,cpu_temp_threshol
 # Inlet temperature metric by encapsulating the inlet temperature and other infos into dictionary                                                                                       
 ###############################################################################################                                                                                               
 
-def build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_thresholds,retry,error):
-    mon_data_dict = {'measurement':'Inlet_Temperature','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    if inlet_temp != None:
-        cpukeys = inlet_temp.keys()
-        cpuvals = inlet_temp.values()
-        for (k,v) in zip(cpukeys, cpuvals):
-            mon_data_dict['fields'][k] = v
-    else:
-        mon_data_dict['fields']['InletTemp'] = None
-    if inlet_temp_thresholds != None:
-        mon_data_dict['fields']['inletLowerThresholdCritical'] = inlet_temp_thresholds['inletLowerThresholdCritical']
-        mon_data_dict['fields']['inletLowerThresholdNonCritical'] = inlet_temp_thresholds['inletLowerThresholdNonCritical']
-        mon_data_dict['fields']['inletUpperThresholdCritical'] = inlet_temp_thresholds['inletUpperThresholdCritical']
-        mon_data_dict['fields']['inletUpperThresholdNonCritical'] = inlet_temp_thresholds['inletUpperThresholdNonCritical']
-
-    mon_data_dict['fields']['retry'] = retry
+def build_inlet_temperature_metric(inlet_key,inlet_val, host):
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
+    
+    mon_data_dict['fields']['Reading'] = inlet_val
     mon_data_dict['time'] = datetime.datetime.now().isoformat()
     return mon_data_dict
 
@@ -1484,17 +1484,9 @@ def build_inlet_temperature_metric(inlet_temp,tot_time,host,inlet_temp_threshold
 # Builds power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
 ############################################################################################### 
 
-def build_power_usage_metric(power_usage,tot_time,host,pwr_thresholds,retry,error):
-    mon_data_dict = {'measurement':'Node_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['powerusage_watts'] = power_usage
-    mon_data_dict['fields']['retry'] = retry
-    if pwr_thresholds != None:
-        mon_data_dict['fields']['PowerRequestedWatts'] = pwr_thresholds['PowerRequestedWatts']
-        mon_data_dict['fields']['PowerCapacityWatts'] = pwr_thresholds['PowerCapacityWatts']
-        mon_data_dict['fields']['PowerAvailableWatts'] = pwr_thresholds['PowerAvailableWatts']
-
-    mon_data_dict['fields']['error'] =error
+def build_power_usage_metric(power_usage,host):
+    mon_data_dict = {'measurement':'Power','tags':{'Sensor':'NodePower','NodeID':host},'time':None,'fields':{}}
+    mon_data_dict['fields']['Reading'] = power_usage
     mon_data_dict['time'] = datetime.datetime.now().isoformat()
     return mon_data_dict
     
@@ -1614,12 +1606,9 @@ def main():
 
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
-        bmcCred=json.load(bmc_cred)
+        bmcCred = json.load(bmc_cred)
     userName = bmcCred[0]
     passwd = bmcCred[1]
-    print("\nUser: ",userName)
-    print ("\nPassword: ",passwd)
-    return
 
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
     # KnownProblematicBMCs = []
@@ -1635,9 +1624,10 @@ def main():
     #REMOVEME
     checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
+    hostList = ['10.100.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    #checkList = ['MEMPWR','CPUPWR']
+    checkList = ['Thermal','Power']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1691,12 +1681,12 @@ def launch (taskList,session,startTime,hostList):
     #print (objList)
     #print("\nstart cluster metric\n") 
 
-    jsonObjList = build_cluster_metric (objList,hostList,ts)
+    #jsonObjList = build_cluster_metric (objList,hostList,ts)
 
-    print ("\n\ncomplete data:",len(objList))
-    jsonObjList += objList
-    print ("\nUnified plus jobs:",len(jsonObjList))
-   
+    print ("\n\nTotal Metrics:",len(objList))
+    #jsonObjList += objList
+    print ("\n\nMetrics:",objList)
+    return   
         
         # Log of (sheets) responses is created for all checks except HPCJob
     '''
