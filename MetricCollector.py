@@ -33,8 +33,7 @@ except requests.exceptions.Timeout as errt:
 except requests.exceptions.RequestException as err:
     print ("OOps: Something Else",err)
 '''
-userName = ""
-passwd = ""
+
 
 ###############################################################################################                                                                            
 # Get BMC health metric                                                                                                                                                    
@@ -1593,7 +1592,10 @@ def  parallelizeTasks (input_data,session):
     except Exception as e:
         node_error_list.append([e])
         return node_json_list, node_error_list
-        
+
+userName = ""
+passwd = ""
+
 def main():
     
     # List of hard coded IP addresses of iDracs (13G)
@@ -1607,6 +1609,9 @@ def main():
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
         bmcCred = json.load(bmc_cred)
+    global userName
+    global passwd
+
     userName = bmcCred[0]
     passwd = bmcCred[1]
 
@@ -1684,7 +1689,7 @@ def launch (taskList,session,startTime,hostList):
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
 
     print ("\n\nTotal Metrics:",len(objList))
-    #jsonObjList += objList
+    jsonObjList = objList
     print ("\n\nMetrics:",objList)
     return   
         
