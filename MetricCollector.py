@@ -1447,6 +1447,9 @@ def build_fanhealth_metric(fan_health,tot_time,host,retry,error):
 ###############################################################################################  
 
 def build_cpu_temperature_metric(cpukey,tempval, host):
+    cpukey = cpukey.split(" ")
+    cpukey = "".join(cpukey)
+
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':cpukey,'host':host},'time':None,'fields':{}}
     # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     # if cpu_temperature != None:
@@ -1472,6 +1475,8 @@ def build_cpu_temperature_metric(cpukey,tempval, host):
 ###############################################################################################                                                                                               
 
 def build_inlet_temperature_metric(inlet_key,inlet_val, host):
+    inlet_key = inlet_key.split(" ")
+    inlet_key = "".join(inlet_key)
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
     
     mon_data_dict['fields']['Reading'] = inlet_val
