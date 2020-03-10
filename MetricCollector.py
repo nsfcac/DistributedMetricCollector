@@ -392,7 +392,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         
         # first error (if any) is copied
         # initial_error = error
-        print ("\n\nPower Usage: ",power_usage,"\n")
+        print (power_usage)
         # In case of no error, response is recieved successfully without any retry
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
@@ -465,7 +465,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         tot_time=time.time() - start_time
         
         #initial_error = error
-        print ("\n\CPU Thermal: ",cpu_temperature,"\n")
+        print (cpu_temperature)
         if error == 'None':
             if cpu_temperature != None:
                 cpukeys = cpu_temperature.keys()
