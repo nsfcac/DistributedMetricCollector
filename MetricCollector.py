@@ -1419,7 +1419,7 @@ def build_fanspeed_metric(fankey,val,host):
     #     mon_data_dict['fields']['fanLowerThresholdNonCritical'] = 'None'
     #     mon_data_dict['fields']['fanUpperThresholdNonCritical'] = 'None'
     mon_data_dict['fields']['Reading'] = val
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
 
     return mon_data_dict
  
