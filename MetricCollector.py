@@ -862,10 +862,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     # print (len(jsonJobList))
     
     #print (jsonJobList)
-    # for jj in jsonJobList:
-    #     #print (jj,'\n\n')
-    #     nl = jj['fields']['NodeList']
-    #     jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
+    for jj in jsonJobList:
+        nl = jj['fields']['NodeList']
+        jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
 
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
@@ -874,8 +873,8 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
         for jj in jsonJobList:
             jj['measurement'] = 'JobsInfo'
-            nl = jj['fields']['NodeList']
-            jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
+            # nl = jj['fields']['NodeList']
+            # jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
         json_node_list += jsonJobList
         
     # if userNames:
