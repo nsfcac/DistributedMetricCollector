@@ -282,7 +282,7 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
            
         response.raise_for_status()
         data = response.json()
-        print (data)
+        #print (data)
         
         #return None, None
         return data, str(None)
@@ -827,7 +827,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                 jID = jID+'.'+j['taskId']
             jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
             if jobItem == None:
-                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID,'Queue': ''}})
+                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
             else:
                 jobItem['fields']['CPUCores'] += 1
                 node_addresses = jobItem['fields']['NodeList']
