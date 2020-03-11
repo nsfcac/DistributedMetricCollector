@@ -1738,7 +1738,7 @@ def launch (taskList,session,startTime,hostList):
     for obj in objList:
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
         print (obj)
-        print("\n\n")
+        print("\n")
 
     print ("\n\nTotal Metrics:",len(objList))
     # jsonObjList += objList
