@@ -869,13 +869,13 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
         # json_node_list += jsonJobList
-        # json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
+        json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
 
         for jj in jsonJobList:
             jj['measurement'] = 'JobsInfo'
             # nl = jj['fields']['NodeList']
             # jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
-        #json_node_list += jsonJobList
+        json_node_list += jsonJobList
         
     # if userNames:
     #     mon_data_dict = build_currentusers_metric(userNames,timeStamp)
