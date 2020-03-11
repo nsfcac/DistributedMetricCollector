@@ -903,15 +903,15 @@ def build_node_job_mapping(jsonJobList,timeStamp):
     jsonNodeJobList = []
 
     for j in jsonJobList:
-        if j['fields']['total_nodes'] > 1:
-            nodeAddresses = j['fields']['nodes_address'].split(',')
+        if j['fields']['TotalNodes'] > 1:
+            nodeAddresses = j['fields']['NodeList'].split(',')
             for nodeAddress in nodeAddresses:
                 l = nodeAddress.split('-')
                 jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':l[0]},'fields':{'JobList':j['measurement']},'time':timeStamp})
 
         else:
             cnt = 0
-            n = j['fields']['nodes_address'].split('-')[0]
+            n = j['fields']['NodeList'].split('-')[0]
             for jobnode in jsonNodeJobList:
                 if n == jobnode['tags']['NodeId']:
                     cnt = 1
@@ -920,14 +920,14 @@ def build_node_job_mapping(jsonJobList,timeStamp):
                 continue
 
             jobIDs = j['measurement']
-            totalCores = int(j['fields']['nodes_address'].split('-')[1])
+            totalCores = int(j['fields']['NodeList'].split('-')[1])
             
             remainingJobList = jsonJobList[jsonJobList.index(j)+1:]
             
             for jj in remainingJobList:
-                if n == jj['fields']['nodes_address'].split('-')[0]:
+                if n == jj['fields']['NodeList'].split('-')[0]:
                     jobIDs += ','+jj['measurement']
-                    totalCores += int(jj['fields']['nodes_address'].split('-')[1])
+                    totalCores += int(jj['fields']['NodeList'].split('-')[1])
 
             jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
     verify(jsonNodeJobList)
