@@ -846,7 +846,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
             #.....
             jl.update({jID:jID})
             #if (any(jID in ele for ele in jobList)):
-            if j['JobState'] != 'r':
+            if j['state'] != 'r':
                 if jID not in nr:
                     nr.append(jID)
             #.....
