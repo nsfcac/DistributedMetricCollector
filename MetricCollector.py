@@ -908,7 +908,7 @@ def build_node_job_mapping(jsonJobList,timeStamp):
             cnt = 0
             n = j['fields']['nodes_address'].split('-')[0]
             for jobnode in jsonNodeJobList:
-                if n == jobnode['fields']['node']:
+                if n == jobnode['tags']['NodeId']:
                     cnt = 1
                     continue
             if cnt == 1:
