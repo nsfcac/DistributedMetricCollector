@@ -9,6 +9,8 @@ from threading import Thread
 import multiprocessing
 import requests
 
+from decimal import Decimal
+
 import time
 
 from influxdb import InfluxDBClient
@@ -815,6 +817,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
         jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
+        continue
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
                 continue
@@ -853,10 +856,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
             if jID not in jobsID:
                 jobsID.append(jID)
     
-    print (len(jobsID))
-    print (len(jl))
-    print (len(nr))
-    print (len(jsonJobList))
+    # print (len(jobsID))
+    # print (len(jl))
+    # print (len(nr))
+    # print (len(jsonJobList))
     
     #print (jsonJobList)
     for jj in jsonJobList:
@@ -865,7 +868,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
         jj['fields']['nodes_address'] = ','.join(str(n) for n in nl)
 
     if jsonJobList:
-        print ('\njson_node_list: ',len(json_node_list),'\n')
+        #print ('\njson_node_list: ',len(jsonJobList),'\n')
         json_node_list += jsonJobList
         json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
     
@@ -924,7 +927,7 @@ def build_node_job_mapping(jsonJobList,timeStamp):
 
             jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':n,'loca\
             tion':'ESB'},'fields':{'node':n,'jobID':jobIDs,'CPUCores':totalCores},'time':timeStamp})
-    verify(jsonNodeJobList)
+    #verify(jsonNodeJobList)
     return jsonNodeJobList
     
 def verify (jsonNodeJobList):
@@ -1353,27 +1356,29 @@ def build_mem_health_metric(mem_health,tot_time,host,retry,error):
 ############################################################################################### 
 
 def build_cpu_usage_metric(cpu_usage,host,error,timeStamp):
-    mon_data_dict = {'measurement':'CPU_Usage','tags':{'cluster':'quanah','location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['cpuusage'] = float(cpu_usage)
-    mon_data_dict['fields']['error'] =error
+    mon_data_dict = {'measurement':'UGE','tags':{'Sensor':'CPUUsage','NodeId': host},'time':None,'fields':{}}
+    mon_data_dict['fields']['Reading'] = round(Decimal(cpu_usage),2)
     mon_data_dict['time'] = timeStamp
-    #host_ip = get_hostip(hostname,host)
-    mon_data_dict['tags']['host'] = host
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
 # Builds memory usage metric by encapsulating the memory usage data into dictionary                                                                                                                    
 ############################################################################################### 
 
+# def build_memory_usage_metric(total_memory, available_memory,used_memory,host,error,timeStamp):
+#     mon_data_dict = {'measurement':'Memory_Usage','tags':{'cluster':'quanah','location':'ESB'},'time':None,'fields':{}}
+#     mon_data_dict['fields']['total_memory'] = str(total_memory)
+#     mon_data_dict['fields']['available_memory'] = str(available_memory)
+#     mon_data_dict['fields']['memoryusage'] = used_memory
+#     mon_data_dict['fields']['error'] =error
+#     mon_data_dict['time'] = timeStamp
+#     #host_ip = get_hostip(hostname,host)
+#     mon_data_dict['tags']['host'] = host
+#     return mon_data_dict
+
 def build_memory_usage_metric(total_memory, available_memory,used_memory,host,error,timeStamp):
-    mon_data_dict = {'measurement':'Memory_Usage','tags':{'cluster':'quanah','location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['total_memory'] = str(total_memory)
-    mon_data_dict['fields']['available_memory'] = str(available_memory)
-    mon_data_dict['fields']['memoryusage'] = used_memory
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = timeStamp
-    #host_ip = get_hostip(hostname,host)
-    mon_data_dict['tags']['host'] = host
+    mon_data_dict = {'measurement':'UGE','tags':{'Sensor':'MemUsage','NodeId': host},'time':timeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = used_memory
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
