@@ -815,10 +815,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     nr = []
 
     for hostinfo in job_data:
-        node = get_hostip(hostinfo['hostname'].split('.')[0])
-        if node != None:
-            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
-        continue
+        # node = get_hostip(hostinfo['hostname'].split('.')[0])
+        # if node != None:
+        #     jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
                 continue
@@ -870,7 +869,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
-        json_node_list += jsonJobList
+        #json_node_list += jsonJobList
         json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
     
         
@@ -895,7 +894,6 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     json_node_list.append(mon_data_dict)
     #     error_list.append(['cluster_power_usage', checkType, 'None'])
     
-
 def build_node_job_mapping(jsonJobList,timeStamp):
     jsonNodeJobList = []
 
@@ -904,7 +902,7 @@ def build_node_job_mapping(jsonJobList,timeStamp):
             nodeAddresses = j['fields']['nodes_address'].split(',')
             for nodeAddress in nodeAddresses:
                 l = nodeAddress.split('-')
-                jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':l[0],'location':'ESB'},'fields':{'node':l[0],'jobID':j['measurement'],'CPUCores':int(l[1])},'time':timeStamp})
+                jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':l[0]},'fields':{'JobList':j['measurement']},'time':timeStamp})
 
         else:
             cnt = 0
@@ -926,10 +924,44 @@ def build_node_job_mapping(jsonJobList,timeStamp):
                     jobIDs += ','+jj['measurement']
                     totalCores += int(jj['fields']['nodes_address'].split('-')[1])
 
-            jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':n,'loca\
-            tion':'ESB'},'fields':{'node':n,'jobID':jobIDs,'CPUCores':totalCores},'time':timeStamp})
-    #verify(jsonNodeJobList)
+            jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
+    verify(jsonNodeJobList)
     return jsonNodeJobList
+
+# def build_node_job_mapping(jsonJobList,timeStamp):
+#     jsonNodeJobList = []
+
+#     for j in jsonJobList:
+#         if j['fields']['total_nodes'] > 1:
+#             nodeAddresses = j['fields']['nodes_address'].split(',')
+#             for nodeAddress in nodeAddresses:
+#                 l = nodeAddress.split('-')
+#                 jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':l[0],'location':'ESB'},'fields':{'node':l[0],'jobID':j['measurement'],'CPUCores':int(l[1])},'time':timeStamp})
+
+#         else:
+#             cnt = 0
+#             n = j['fields']['nodes_address'].split('-')[0]
+#             for jobnode in jsonNodeJobList:
+#                 if n == jobnode['fields']['node']:
+#                     cnt = 1
+#                     continue
+#             if cnt == 1:
+#                 continue
+
+#             jobIDs = j['measurement']
+#             totalCores = int(j['fields']['nodes_address'].split('-')[1])
+            
+#             remainingJobList = jsonJobList[jsonJobList.index(j)+1:]
+            
+#             for jj in remainingJobList:
+#                 if n == jj['fields']['nodes_address'].split('-')[0]:
+#                     jobIDs += ','+jj['measurement']
+#                     totalCores += int(jj['fields']['nodes_address'].split('-')[1])
+
+#             jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':n,'loca\
+#             tion':'ESB'},'fields':{'node':n,'jobID':jobIDs,'CPUCores':totalCores},'time':timeStamp})
+#     #verify(jsonNodeJobList)
+#     return jsonNodeJobList
     
 def verify (jsonNodeJobList):
     print ("Total Nodes running jobs:",len(jsonNodeJobList))
