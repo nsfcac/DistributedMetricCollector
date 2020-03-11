@@ -869,7 +869,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
         # json_node_list += jsonJobList
-        json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
+        #json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
 
         for jj in jsonJobList:
             jj['measurement'] = 'JobsInfo'
