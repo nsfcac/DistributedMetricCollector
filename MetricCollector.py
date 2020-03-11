@@ -929,7 +929,7 @@ def build_node_job_mapping(jsonJobList,timeStamp):
                     totalCores += int(jj['fields']['NodeList'].split('-')[1])
 
             jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
-    verify(jsonNodeJobList)
+    #verify(jsonNodeJobList)
     return jsonNodeJobList
 
 # def build_node_job_mapping(jsonJobList,timeStamp):
