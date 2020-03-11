@@ -869,7 +869,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
         # json_node_list += jsonJobList
-        #json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
+        # json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
 
         for jj in jsonJobList:
             jj['measurement'] = 'JobsInfo'
@@ -1222,6 +1222,7 @@ def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
         total_memory =hostinfo['resourceNumericValues']['m_mem_total']
         available_memory=hostinfo['resourceNumericValues']['m_mem_free']
         used_memory = float(float(re.sub("\D","",total_memory)) - float(re.sub("\D","",available_memory)))/1000
+        used_memory = round(used_memory/total_memory,2)
         mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
         json_node_list.append(mon_data_dict)
         error_list.append([host_ip, checkType, 'None'])
