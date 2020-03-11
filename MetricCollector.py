@@ -280,7 +280,8 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
            
         response.raise_for_status()
         data = response.json()
-        # print (data)
+        #print (data)
+        
         #return None, None
         return data, str(None)
 
@@ -869,26 +870,26 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
         json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
     
         
-    if userNames:
-        mon_data_dict = build_currentusers_metric(userNames,timeStamp)
-        json_node_list.append(mon_data_dict)
-        error_list.append(['cluster', checkType, 'None'])
-    if jobsID:
-        mon_data_dict = build_currentjobsid_metric(jobsID,timeStamp)
-        json_node_list.append(mon_data_dict)
-        error_list.append(['cluster', checkType, 'None'])
+    # if userNames:
+    #     mon_data_dict = build_currentusers_metric(userNames,timeStamp)
+    #     json_node_list.append(mon_data_dict)
+    #     error_list.append(['cluster', checkType, 'None'])
+    # if jobsID:
+    #     mon_data_dict = build_currentjobsid_metric(jobsID,timeStamp)
+    #     json_node_list.append(mon_data_dict)
+    #     error_list.append(['cluster', checkType, 'None'])
 
-    #Cluster wide Jobs and Nodes power usage storage
-    client1 = InfluxDBClient(host='localhost', port=8086)
-    client1.switch_database('hpcc_monitoring_db')
-    node_total_pwr = calc_currentnode_power(client1)
-    job_total_pwr,time = calc_currentjob_power(client1)
+    # #Cluster wide Jobs and Nodes power usage storage
+    # client1 = InfluxDBClient(host='localhost', port=8086)
+    # client1.switch_database('hpcc_monitoring_db')
+    # node_total_pwr = calc_currentnode_power(client1)
+    # job_total_pwr,time = calc_currentjob_power(client1)
     
     
-    if node_total_pwr and job_total_pwr:
-        mon_data_dict = build_currentjobsnodespwrusage_metric(node_total_pwr,job_total_pwr,time)
-        json_node_list.append(mon_data_dict)
-        error_list.append(['cluster_power_usage', checkType, 'None'])
+    # if node_total_pwr and job_total_pwr:
+    #     mon_data_dict = build_currentjobsnodespwrusage_metric(node_total_pwr,job_total_pwr,time)
+    #     json_node_list.append(mon_data_dict)
+    #     error_list.append(['cluster_power_usage', checkType, 'None'])
     
 
 def build_node_job_mapping(jsonJobList,timeStamp):
@@ -907,8 +908,10 @@ def build_node_job_mapping(jsonJobList,timeStamp):
             for jobnode in jsonNodeJobList:
                 if n == jobnode['fields']['node']:
                     cnt = 1
+                    print('\ncant=1\n')
                     continue
             if cnt == 1:
+                print('\ncant==1\n')
                 continue
 
             jobIDs = j['measurement']
@@ -923,7 +926,7 @@ def build_node_job_mapping(jsonJobList,timeStamp):
 
             jsonNodeJobList.append({'measurement': 'node_job_info','tags':{'cluster':'quanah','host':n,'loca\
             tion':'ESB'},'fields':{'node':n,'jobID':jobIDs,'CPUCores':totalCores},'time':timeStamp})
-    #verify(jsonNodeJobList)
+    verify(jsonNodeJobList)
     return jsonNodeJobList
     
 def verify (jsonNodeJobList):
