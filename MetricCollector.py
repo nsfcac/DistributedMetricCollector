@@ -280,7 +280,7 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
            
         response.raise_for_status()
         data = response.json()
-        #print (data)
+        print (data)
         #return None, None
         return data, str(None)
 
@@ -392,7 +392,6 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         
         # first error (if any) is copied
         # initial_error = error
-        print (error)
         # In case of no error, response is recieved successfully without any retry
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
@@ -465,7 +464,6 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         tot_time=time.time() - start_time
         
         #initial_error = error
-        print (error)
         if error == 'None':
             if cpu_temperature != None:
                 cpukeys = cpu_temperature.keys()
@@ -770,7 +768,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         job_data, error  = get_hpcjob_data(conn_time_out,read_time_out,session)
         
         if error == 'None':
-            timeStamp = datetime.datetime.now().isoformat()
+            timeStamp = int(datetime.datetime.now().timestamp())
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
             build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp)
 
@@ -1634,10 +1632,10 @@ def main():
     #REMOVEME
     checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
-    hostList = ['10.101.10.25']
+    # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['Thermal','Power']
+    checkList = ['HPCJob']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1649,16 +1647,17 @@ def main():
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
     startTime = time.time()
     for check in checkList:
+        # as HPCJob check is not part of iDRAC so it will be considered single task
+        if check == 'HPCJob':
+            taskList.append([hostList,check])
+            continue
+        elif check == 'MEMPWR' or check == 'CPUPWR':
+            hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
+            for h in hlist:
+                taskList.append([h,check])        
+            continue
         for host in hostList:
-            # as HPCJob check is not part of iDRAC so it will be considered single task
-            if check == 'HPCJob':
-                taskList.append([hostList,check])
-                break
-            elif check == 'MEMPWR' or check == 'CPUPWR':
-                hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
-                for h in hlist:
-                    taskList.append([h,check])        
-                break
+            
             taskList.append([host,check])
 
     launch (taskList,session,startTime,hostList)
@@ -1692,16 +1691,16 @@ def launch (taskList,session,startTime,hostList):
     #print("\nstart cluster metric\n") 
 
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
-    for obj in objList:
-        if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
-            print (obj)
-            print("\n\n")
-    return
+    # for obj in objList:
+    #     if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+    #         print (obj)
+    #         print("\n\n")
+    # return
 
     print ("\n\nTotal Metrics:",len(objList))
-    jsonObjList += objList
-    print ("\n\nMetrics:",objList)
-       
+    # jsonObjList += objList
+    # print ("\n\nMetrics:",objList)
+      return 
         
         # Log of (sheets) responses is created for all checks except HPCJob
     '''
