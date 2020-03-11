@@ -1358,8 +1358,7 @@ def build_mem_health_metric(mem_health,tot_time,host,retry,error):
 
 def build_cpu_usage_metric(cpu_usage,host,error,timeStamp):
     mon_data_dict = {'measurement':'UGE','tags':{'Sensor':'CPUUsage','NodeId': host},'time':None,'fields':{}}
-    cpuUsage = Decimal(cpu_usage)
-    mon_data_dict['fields']['Reading'] = round(cpuUsage,2)
+    mon_data_dict['fields']['Reading'] = round(cpu_usage,2)
     mon_data_dict['time'] = timeStamp
     return mon_data_dict
 
