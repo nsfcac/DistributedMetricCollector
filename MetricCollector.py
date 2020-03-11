@@ -865,7 +865,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
         jj['fields']['nodes_address'] = ','.join(str(n) for n in nl)
 
     if jsonJobList:
-        #print ('\njsonJobList: ',len(jsonJobList),'\n')
+        print ('\njson_node_list: ',len(json_node_list),'\n')
         json_node_list += jsonJobList
         json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
     
@@ -908,10 +908,8 @@ def build_node_job_mapping(jsonJobList,timeStamp):
             for jobnode in jsonNodeJobList:
                 if n == jobnode['fields']['node']:
                     cnt = 1
-                    print('\ncant=1\n')
                     continue
             if cnt == 1:
-                print('\ncant==1\n')
                 continue
 
             jobIDs = j['measurement']
