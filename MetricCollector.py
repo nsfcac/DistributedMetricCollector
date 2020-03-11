@@ -816,8 +816,8 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
-        # if node != None:
-        #     jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
+        if node != None:
+            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
                 continue
@@ -875,7 +875,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
             jj['measurement'] = 'JobsInfo'
             # nl = jj['fields']['NodeList']
             # jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
-        json_node_list += jsonJobList
+        #json_node_list += jsonJobList
         
     # if userNames:
     #     mon_data_dict = build_currentusers_metric(userNames,timeStamp)
