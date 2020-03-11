@@ -968,12 +968,12 @@ def verify (jsonNodeJobList):
     nodes = []
     jobs = []
     for jnjl in jsonNodeJobList:
-        if jnjl['fields']['node'] in nodes:
+        if jnjl['tags']['NodeId'] in nodes:
             print ("\n\nDUPLICATED NODE\n\n'")
         else:
-            nodes.append(jnjl['fields']['node'])
+            nodes.append(jnjl['tags']['NodeId'])
 
-        jl = jnjl['fields']['jobID'].split(',')
+        jl = jnjl['fields']['JobList'].split(',')
         for i in jl:
             if i not in jobs:
                 jobs.append(i)
