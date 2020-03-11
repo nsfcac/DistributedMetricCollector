@@ -1700,7 +1700,7 @@ def launch (taskList,session,startTime,hostList):
     print ("\n\nTotal Metrics:",len(objList))
     # jsonObjList += objList
     # print ("\n\nMetrics:",objList)
-      return 
+    return     
         
         # Log of (sheets) responses is created for all checks except HPCJob
     '''
