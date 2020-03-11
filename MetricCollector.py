@@ -816,7 +816,8 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
-        jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
+        if node != None:
+            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
         continue
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
@@ -1357,7 +1358,8 @@ def build_mem_health_metric(mem_health,tot_time,host,retry,error):
 
 def build_cpu_usage_metric(cpu_usage,host,error,timeStamp):
     mon_data_dict = {'measurement':'UGE','tags':{'Sensor':'CPUUsage','NodeId': host},'time':None,'fields':{}}
-    mon_data_dict['fields']['Reading'] = round(Decimal(cpu_usage),2)
+    cpuUsage = Decimal(cpu_usage)
+    mon_data_dict['fields']['Reading'] = round(cpuUsage,2)
     mon_data_dict['time'] = timeStamp
     return mon_data_dict
 
@@ -1701,7 +1703,6 @@ def launch (taskList,session,startTime,hostList):
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
         print (obj)
         print("\n\n")
-    return
 
     print ("\n\nTotal Metrics:",len(objList))
     # jsonObjList += objList
