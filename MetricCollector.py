@@ -827,10 +827,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                 jID = jID+'A'+j['taskId']
             jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
             if jobItem == None:
-                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'total_nodes':1,'app_name':j['name'],'id':j['id'],'error': 'None', 'submitTime': j['submitTime'], 'nodes_address': [node+'-1'],'user': j['user'], 'state': j['state'], 'startTime': j['startTime'],'CPUCores':1}, 'tags': {'location': 'ESB', 'cluster': 'quanah'}})
+                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'JobUser': j['user'], 'JobState': j['state'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID}})
             else:
                 jobItem['fields']['CPUCores'] += 1
-                node_addresses = jobItem['fields']['nodes_address']
+                node_addresses = jobItem['fields']['NodeList']
                 exists = 0
                 for n in node_addresses:
                     if node in n:
@@ -838,15 +838,15 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                         node_addresses[node_addresses.index(n)] = node+'-'+str(int(n[n.find('-')+1:])+1)
 
                 if exists == 0:
-                    jobItem['fields']['nodes_address'].append(node+'-1')
-                    jobItem['fields']['total_nodes']=len(jobItem['fields']['nodes_address'])
+                    jobItem['fields']['NodeList'].append(node+'-1')
+                    jobItem['fields']['TotalNodes']=len(jobItem['fields']['NodeList'])
                 
                 
                 
             #.....
             jl.update({jID:jID})
             #if (any(jID in ele for ele in jobList)):
-            if j['state'] != 'r':
+            if j['JobState'] != 'r':
                 if jID not in nr:
                     nr.append(jID)
             #.....
@@ -862,16 +862,21 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     # print (len(jsonJobList))
     
     #print (jsonJobList)
-    for jj in jsonJobList:
-        #print (jj,'\n\n')
-        nl = jj['fields']['nodes_address']
-        jj['fields']['nodes_address'] = ','.join(str(n) for n in nl)
+    # for jj in jsonJobList:
+    #     #print (jj,'\n\n')
+    #     nl = jj['fields']['NodeList']
+    #     jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
 
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
-        #json_node_list += jsonJobList
+        # json_node_list += jsonJobList
         json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
-    
+
+        for jj in jsonJobList:
+            jj['measurement'] = 'JobsInfo'
+            nl = jj['fields']['NodeList']
+            jj['fields']['NodeList'] = ','.join(str(n) for n in nl)
+        json_node_list += jsonJobList
         
     # if userNames:
     #     mon_data_dict = build_currentusers_metric(userNames,timeStamp)
