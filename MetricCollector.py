@@ -280,7 +280,7 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
            
         response.raise_for_status()
         data = response.json()
-        print (data)
+        # print (data)
         #return None, None
         return data, str(None)
 
@@ -851,12 +851,12 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                 userNames.append(j['user'])
             if jID not in jobsID:
                 jobsID.append(jID)
-    '''
+    
     print (len(jobsID))
     print (len(jl))
     print (len(nr))
     print (len(jsonJobList))
-    '''
+    
     #print (jsonJobList)
     for jj in jsonJobList:
         #print (jj,'\n\n')
