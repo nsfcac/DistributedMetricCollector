@@ -824,10 +824,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
             jID = 'qu_'+str(j['id'])
             if 'taskId' in j:
-                jID = jID+'A'+j['taskId']
+                jID = jID+'.'+j['taskId']
             jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
             if jobItem == None:
-                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'JobUser': j['user'], 'JobState': j['state'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID}})
+                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID}})
             else:
                 jobItem['fields']['CPUCores'] += 1
                 node_addresses = jobItem['fields']['NodeList']
