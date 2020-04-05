@@ -817,6 +817,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     jl = {}
     nr = []
     
+    # maintain global list of jobs
+    liveJobs = []
+
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
         if node != None:
