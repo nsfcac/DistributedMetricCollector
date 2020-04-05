@@ -1,5 +1,8 @@
 import csv
-import datetime
+
+#import datetime
+from datetime import datetime
+
 import re
 import json
 
@@ -21,7 +24,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import xlwt 
 from xlwt import Workbook
 
-from datetime import datetime
 ###################
 '''
 try:
