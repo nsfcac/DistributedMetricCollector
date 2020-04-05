@@ -1714,8 +1714,14 @@ def main():
 
 def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
-    ts = datetime.datetime.now() + datetime.timedelta(seconds=10)
+    ts = datetime.now() + datetime.date.timedelta(seconds=10)
     ts = ts.isoformat()
+    print(ts)
+    ts = ts.timestamp()
+    print("\n")
+    print(ts)
+    return
+    
     '''
     # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
     for check in checkList:
