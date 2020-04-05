@@ -818,7 +818,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     nr = []
     
     # maintain global list of jobs
-    liveJobs = []
+    global lastLiveJobs
+    print ("\n *** LAST LIVE JOBS: ", len(lastLiveJobs), " ****\n")
+
+    newJobs = []
 
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
@@ -832,26 +835,29 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
             if 'taskId' in j:
                 jID = jID+'.'+j['taskId']
             
-            jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
-            if jobItem == None:
-                jobStartTime = int(datetime.strptime(j['startTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())    
-                jobSubmitTime = int(datetime.strptime(j['submitTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())
-                jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': jobSubmitTime, 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': jobStartTime,'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
-            else:
-                jobItem['fields']['CPUCores'] += 1
-                node_addresses = jobItem['fields']['NodeList']
-                exists = 0
-                for n in node_addresses:
-                    if node in n:
-                        exists = 1
-                        node_addresses[node_addresses.index(n)] = node+'-'+str(int(n[n.find('-')+1:])+1)
+            if jID not in lastLiveJobs:
+                lastLiveJobs.append(jID)
+                newJobs.append(jID)
 
-                if exists == 0:
-                    jobItem['fields']['NodeList'].append(node+'-1')
-                    jobItem['fields']['TotalNodes']=len(jobItem['fields']['NodeList'])
-                
-                
-                
+                jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
+                if jobItem == None:
+                    jobStartTime = int(datetime.strptime(j['startTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())    
+                    jobSubmitTime = int(datetime.strptime(j['submitTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())
+                    jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': jobSubmitTime, 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': jobStartTime,'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
+                else:
+                    jobItem['fields']['CPUCores'] += 1
+                    node_addresses = jobItem['fields']['NodeList']
+                    exists = 0
+                    for n in node_addresses:
+                        if node in n:
+                            exists = 1
+                            node_addresses[node_addresses.index(n)] = node+'-'+str(int(n[n.find('-')+1:])+1)
+
+                    if exists == 0:
+                        jobItem['fields']['NodeList'].append(node+'-1')
+                        jobItem['fields']['TotalNodes']=len(jobItem['fields']['NodeList'])
+                  
+            
             #.....
             jl.update({jID:jID})
             #if (any(jID in ele for ele in jobList)):
@@ -862,14 +868,29 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
             if j['user'] not in userNames:
                 userNames.append(j['user'])
+
             if jID not in jobsID:
                 jobsID.append(jID)
-    
+
     # print (len(jobsID))
     # print (len(jl))
     # print (len(nr))
     # print (len(jsonJobList))
+    print ("\n *** NEW JOBS: ", len(newJobs), " ****\n")
+    # update finished time of finished jobs
+    finishedJobs = []
     
+    for lj in lastLiveJobs:
+        if lj not in jobsID:
+            finishedJobs.append(lj)
+            lastLiveJobs.remove(lj)
+
+    print ("\n *** FINISHED JOBS: ", len(finishedJobs), " ****\n")
+
+    print ("\n *** Updated Last Live JOBS: ", len(lastLiveJobs), " ****\n")
+
+    updateFinishedJobs (finishedJobs)
+            
     #print (jsonJobList)
     for jj in jsonJobList:
         nl = jj['fields']['NodeList']
@@ -907,6 +928,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     json_node_list.append(mon_data_dict)
     #     error_list.append(['cluster_power_usage', checkType, 'None'])
     
+def updateFinishedJobs (finishedJob):
+    for fj in finishedJob:
+        print(fj)
+
 def build_node_job_mapping(jsonJobList,timeStamp):
     jsonNodeJobList = []
 
@@ -1651,6 +1676,7 @@ def  parallelizeTasks (input_data,session):
 
 userName = ""
 passwd = ""
+lastLiveJobs = []
 
 def main():
     
@@ -1698,22 +1724,23 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    startTime = time.time()
-    for check in checkList:
-        # as HPCJob check is not part of iDRAC so it will be considered single task
-        if check == 'HPCJob':
-            taskList.append([hostList,check])
-            continue
-        elif check == 'MEMPWR' or check == 'CPUPWR':
-            hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
-            for h in hlist:
-                taskList.append([h,check])        
-            continue
-        for host in hostList:
-            
-            taskList.append([host,check])
+    for interval in range(5):
+        startTime = time.time()
+        for check in checkList:
+            # as HPCJob check is not part of iDRAC so it will be considered single task
+            if check == 'HPCJob':
+                taskList.append([hostList,check])
+                continue
+            elif check == 'MEMPWR' or check == 'CPUPWR':
+                hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
+                for h in hlist:
+                    taskList.append([h,check])        
+                continue
+            for host in hostList:
+                
+                taskList.append([host,check])
 
-    launch (taskList,session,startTime,hostList)
+        launch (taskList,session,startTime,hostList)
 
 def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
@@ -1746,7 +1773,7 @@ def launch (taskList,session,startTime,hostList):
     #print("\nstart cluster metric\n")
     #print (objList)
     #print("\nstart cluster metric\n") 
-
+    return
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
     for obj in objList:
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
