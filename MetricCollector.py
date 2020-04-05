@@ -897,7 +897,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     print ("\n *** Updated Last Live JOBS: ", len(lastLiveJobs), " ****\n")
 
     with open(fName,'w') as writejobs:
-        lastLiveJobs = json.dump(lastJobs, writejobs)
+        lastLiveJobs = json.dump(lastLiveJobs, writejobs)
 
     updateFinishedJobs (finishedJobs)
             
