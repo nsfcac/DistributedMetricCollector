@@ -817,8 +817,6 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     jl = {}
     nr = []
     
-    jobStartTime = int(datetime.strptime(j['startTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())
-
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
         if node != None:
@@ -830,9 +828,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
             jID = str(j['id'])
             if 'taskId' in j:
                 jID = jID+'.'+j['taskId']
+            
             jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
             if jobItem == None:
-                
+                jobStartTime = int(datetime.strptime(j['startTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())    
                 jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': jobStartTime,'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
             else:
                 jobItem['fields']['CPUCores'] += 1
