@@ -2,7 +2,7 @@ import csv
 
 #import datetime
 from datetime import datetime
-
+from datetime import timedelta
 import re
 import json
 
@@ -1714,7 +1714,7 @@ def main():
 
 def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
-    ts = datetime.now() + datetime.time.timedelta(seconds=5)
+    ts = datetime.now() + timedelta(seconds=5)
     ts = ts.isoformat()
     print(ts)
     ts = int(ts.timestamp())
