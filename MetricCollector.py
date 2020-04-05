@@ -816,9 +816,12 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     jobsID = []
     jl = {}
     nr = []
-    
+    lastLiveJobs = []
+
     # maintain global list of jobs
     #global lastLiveJobs
+    with open('/home/production/lastjobs.json','r') as lastJobs:
+        lastLiveJobs = json.load(lastJobs)
     print ("\n *** LAST LIVE JOBS: ", len(lastLiveJobs), " ****\n")
 
     newJobs = []
@@ -888,6 +891,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     print ("\n *** FINISHED JOBS: ", len(finishedJobs), " ****\n")
 
     print ("\n *** Updated Last Live JOBS: ", len(lastLiveJobs), " ****\n")
+
+    with open('/home/production/lastjobs.json','w') as writejobs:
+        lastLiveJobs = json.dump(lastJobs, writejobs)
 
     updateFinishedJobs (finishedJobs)
             
@@ -1676,7 +1682,6 @@ def  parallelizeTasks (input_data,session):
 
 userName = ""
 passwd = ""
-lastLiveJobs = []
 
 def main():
     
@@ -1691,6 +1696,7 @@ def main():
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
         bmcCred = json.load(bmc_cred)
+        
     global userName
     global passwd
 
@@ -1724,23 +1730,22 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    for interval in range(5):
-        startTime = time.time()
-        for check in checkList:
-            # as HPCJob check is not part of iDRAC so it will be considered single task
-            if check == 'HPCJob':
-                taskList.append([hostList,check])
-                continue
-            elif check == 'MEMPWR' or check == 'CPUPWR':
-                hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
-                for h in hlist:
-                    taskList.append([h,check])        
-                continue
-            for host in hostList:
-                
-                taskList.append([host,check])
+    
+    startTime = time.time()
+    for check in checkList:
+        # as HPCJob check is not part of iDRAC so it will be considered single task
+        if check == 'HPCJob':
+            taskList.append([hostList,check])
+            continue
+        elif check == 'MEMPWR' or check == 'CPUPWR':
+            hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
+            for h in hlist:
+                taskList.append([h,check])        
+            continue
+        for host in hostList:
+            taskList.append([host,check])
 
-        launch (taskList,session,startTime,hostList)
+    launch (taskList,session,startTime,hostList)   
 
 def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
