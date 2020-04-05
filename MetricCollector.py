@@ -820,8 +820,11 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     # maintain global list of jobs
     #global lastLiveJobs
-    with open('/home/production/lastjobs.json','r') as lastJobs:
-        lastLiveJobs = json.load(lastJobs)
+    fName = '/home/production/lastjobs.json'
+    if os.path.exists(fName):
+        with open(fName,'r') as lastJobs:
+            lastLiveJobs = json.load(lastJobs)
+    
     print ("\n *** LAST LIVE JOBS: ", len(lastLiveJobs), " ****\n")
 
     newJobs = []
@@ -892,7 +895,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     print ("\n *** Updated Last Live JOBS: ", len(lastLiveJobs), " ****\n")
 
-    with open('/home/production/lastjobs.json','w') as writejobs:
+    with open(fName,'w') as writejobs:
         lastLiveJobs = json.dump(lastJobs, writejobs)
 
     updateFinishedJobs (finishedJobs)
