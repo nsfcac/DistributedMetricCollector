@@ -774,7 +774,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         job_data, error  = get_hpcjob_data(conn_time_out,read_time_out,session)
         
         if error == 'None':
-            timeStamp = int(datetime.datetime.now().timestamp())
+            timeStamp = int(datetime.now().timestamp())
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
             build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp)
 
@@ -1716,10 +1716,7 @@ def launch (taskList,session,startTime,hostList):
 #def launch(hostList,checkList, taskList,session,iteration):
     #ts = datetime.now() + timedelta(seconds=5)
     #ts = ts.isoformat()
-    ts = datetime.now()
-    print(ts)
-    ts = int(ts.timestamp())
-    print("\nTIME FORMAT\n")
+    ts = datetime.now().timestamp()
     print(ts)
 
 
