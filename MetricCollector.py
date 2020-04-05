@@ -850,7 +850,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                 if jobItem == None:
                     jobStartTime = int(datetime.strptime(j['startTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())    
                     jobSubmitTime = int(datetime.strptime(j['submitTime'], '%a %b %d %H:%M:%S %Z %Y').timestamp())
-                    jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': jobSubmitTime, 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': jobStartTime,'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
+                    jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': jobSubmitTime, 'NodeList': [node+'-1'],'User': j['user'], 'StopTime':0,'StartTime': jobStartTime,'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
                 else:
                     jobItem['fields']['CPUCores'] += 1
                     node_addresses = jobItem['fields']['NodeList']
@@ -899,7 +899,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     with open(fName,'w') as writejobs:
         lastLiveJobs = json.dump(lastLiveJobs, writejobs)
 
-    updateFinishedJobs (finishedJobs)
+    client1 = InfluxDBClient(host='localhost', port=8086)
+    client1.switch_database('hpcc_monitoring_db')
+
+    updateFinishedJobs (finishedJobs, client1, timeStamp)
             
     #print (jsonJobList)
     for jj in jsonJobList:
@@ -909,7 +912,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     if jsonJobList:
         #print ('\njson_node_list: ',len(jsonJobList),'\n')
         # json_node_list += jsonJobList
-        json_node_list += build_node_job_mapping(jsonJobList,timeStamp)
+        json_node_list += build_node_job_mapping(jsonJobList, newJobs, timeStamp)
 
         for jj in jsonJobList:
             jj['measurement'] = 'JobsInfo'
@@ -926,9 +929,8 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     json_node_list.append(mon_data_dict)
     #     error_list.append(['cluster', checkType, 'None'])
 
-    # #Cluster wide Jobs and Nodes power usage storage
-    # client1 = InfluxDBClient(host='localhost', port=8086)
-    # client1.switch_database('hpcc_monitoring_db')
+    #Cluster wide Jobs and Nodes power usage storage
+    
     # node_total_pwr = calc_currentnode_power(client1)
     # job_total_pwr,time = calc_currentjob_power(client1)
     
@@ -938,42 +940,48 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     json_node_list.append(mon_data_dict)
     #     error_list.append(['cluster_power_usage', checkType, 'None'])
     
-def updateFinishedJobs (finishedJob):
-    for fj in finishedJob:
-        print(fj)
+def updateFinishedJobs (finishedJob, client,timeStamp):
+    
+    # for fj in finishedJob:
+    #     result = client.query("SELECT jobs_list FROM Current_Jobs_ID ORDER BY DESC LIMIT 1;")
+    #     jobs = list(result.get_points())[0]['jobs_list'].split(',') 
+    #   client.write_points(json_body)
+    #    result = client.query('select * from cpu_load_short;')   
 
-def build_node_job_mapping(jsonJobList,timeStamp):
+def build_node_job_mapping(jsonJobList, newJobs, timeStamp):
     jsonNodeJobList = []
 
     for j in jsonJobList:
-        if j['fields']['TotalNodes'] > 1:
-            nodeAddresses = j['fields']['NodeList'].split(',')
-            for nodeAddress in nodeAddresses:
-                l = nodeAddress.split('-')
-                jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':l[0]},'fields':{'JobList':j['measurement']},'time':timeStamp})
+        if j['tags']['JobId'] in newJobs:
+            if j['fields']['TotalNodes'] > 1:
+                nodeAddresses = j['fields']['NodeList'].split(',')
+                for nodeAddress in nodeAddresses:
+                    l = nodeAddress.split('-')
+                    jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':l[0]},'fields':{'JobList':j['measurement']},'time':timeStamp})
 
-        else:
-            cnt = 0
-            n = j['fields']['NodeList'].split('-')[0]
-            for jobnode in jsonNodeJobList:
-                if n == jobnode['tags']['NodeId']:
-                    cnt = 1
+            else:
+                cnt = 0
+                n = j['fields']['NodeList'].split('-')[0]
+                for jobnode in jsonNodeJobList:
+                    if n == jobnode['tags']['NodeId']:
+                        cnt = 1
+                        continue
+                if cnt == 1:
                     continue
-            if cnt == 1:
-                continue
 
-            jobIDs = j['measurement']
-            totalCores = int(j['fields']['NodeList'].split('-')[1])
-            
-            remainingJobList = jsonJobList[jsonJobList.index(j)+1:]
-            
-            for jj in remainingJobList:
-                if n == jj['fields']['NodeList'].split('-')[0]:
-                    jobIDs += ','+jj['measurement']
-                    totalCores += int(jj['fields']['NodeList'].split('-')[1])
+                jobIDs = j['measurement']
+                totalCores = int(j['fields']['NodeList'].split('-')[1])
+                
+                remainingJobList = jsonJobList[jsonJobList.index(j)+1:]
+                
+                for jj in remainingJobList:
+                    if n == jj['fields']['NodeList'].split('-')[0]:
+                        jobIDs += ','+jj['measurement']
+                        totalCores += int(jj['fields']['NodeList'].split('-')[1])
 
-            jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
+                jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
     #verify(jsonNodeJobList)
+    print("\nXXXX",len(jsonNodeJobList),"XXXX\n")
     return jsonNodeJobList
 
 # def build_node_job_mapping(jsonJobList,timeStamp):
