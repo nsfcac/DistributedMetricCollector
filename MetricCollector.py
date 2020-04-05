@@ -1740,7 +1740,7 @@ def launch (taskList,session,startTime,hostList):
         print (obj)
         print("\n")
 
-    print ("\n\nTotal Metrics:",len(objList))
+    print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     # print ("\n\nMetrics:",objList)
     return     
