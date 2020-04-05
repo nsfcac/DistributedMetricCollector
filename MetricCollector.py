@@ -1714,8 +1714,9 @@ def main():
 
 def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
-    ts = datetime.now() + timedelta(seconds=5)
-    ts = ts.isoformat()
+    #ts = datetime.now() + timedelta(seconds=5)
+    #ts = ts.isoformat()
+    ts = datetime.now().isoformat()
     print(ts)
     ts = int(ts.timestamp())
     print("\nTIME FORMAT\n")
