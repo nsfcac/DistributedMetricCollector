@@ -807,12 +807,14 @@ def build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_
     mon_data_dict['time'] = datetime.datetime.now().isoformat()
     return mon_data_dict
             
-def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
+def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeDate):
     jsonJobList = []
     userNames = []
     jobsID = []
     jl = {}
     nr = []
+    
+    timeStamp = int(datetime.strptime(timeDate, '%a %b %d %H:%M:%S %Z %Y').timestamp())
 
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
@@ -827,6 +829,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
                 jID = jID+'.'+j['taskId']
             jobItem = next((job for job in jsonJobList if job["measurement"] == jID),None)
             if jobItem == None:
+                
                 jsonJobList.append({'measurement': jID, 'time': timeStamp, 'fields': {'TotalNodes':1,'JobName':j['name'],'SubmitTime': j['submitTime'], 'NodeList': [node+'-1'],'User': j['user'], 'StartTime': j['startTime'],'CPUCores':1}, 'tags': {'JobId': jID,'Queue': j['queue']}})
             else:
                 jobItem['fields']['CPUCores'] += 1
