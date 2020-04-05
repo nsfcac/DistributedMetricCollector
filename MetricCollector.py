@@ -821,7 +821,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     # maintain global list of jobs
     #global lastLiveJobs
-    fName = '/home/production/lastjobs.json'
+    fName = '/home/production/lastjobs.txt'
     if os.path.exists(fName):
         with open(fName,'r') as lastJobs:
             lastLiveJobs = json.load(lastJobs)
