@@ -818,7 +818,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     nr = []
     
     # maintain global list of jobs
-    global lastLiveJobs
+    #global lastLiveJobs
     print ("\n *** LAST LIVE JOBS: ", len(lastLiveJobs), " ****\n")
 
     newJobs = []
