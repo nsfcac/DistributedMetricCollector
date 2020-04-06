@@ -1734,7 +1734,7 @@ def main():
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['HPCJob']
+    checkList = ['HPCJob','Thermal','Power']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1792,7 +1792,6 @@ def launch (taskList,session,startTime,hostList):
     #print("\nstart cluster metric\n")
     #print (objList)
     #print("\nstart cluster metric\n") 
-    return
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
     for obj in objList:
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
