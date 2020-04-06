@@ -486,7 +486,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpuvals = inlet_temp.values()
                 for (k,v) in zip (cpukeys,cpuvals):
                     
-                    if v == "":
+                    if v == 0:
                         print ("\n XXX inlet val:",v, "XXX \n")    
                     mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
                     json_node_list.append(mon_data_dict)
@@ -1577,6 +1577,8 @@ def build_cpu_temperature_metric(metricTimeStamp,cpukey,tempval, host):
 def build_inlet_temperature_metric(metricTimeStamp,inlet_key,inlet_val, host):
     inlet_key = inlet_key.split(" ")
     inlet_key = "".join(inlet_key)
+    if inlet_key == "":
+        print ("\n XXX inlet key:",inlet_key, "XXX \n")
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
     
     mon_data_dict['fields']['Reading'] = inlet_val
