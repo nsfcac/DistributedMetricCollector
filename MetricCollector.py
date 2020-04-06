@@ -305,7 +305,7 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
 # 3) Build metric(s)
 ##############################################################################################
 
-def getNodesData (host, checkType, json_node_list, error_list,session):
+def getNodesData (host, checkType, json_node_list, error_list,session,metricTimeStamp):
     
     error=""
     # Based on our experience, 13G iDRAC takes 3 to 5 seconds to process a Redfish API call so
@@ -341,7 +341,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         # In case of no error, response is recieved successfully without any retry
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
-            mon_data_dict = build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
+            mon_data_dict = build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
             # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
             json_node_list.append(mon_data_dict)
             # error ('None' in this case) with host and checktype is appended to global error list
@@ -372,7 +372,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         # In case of no error, response is recieved successfully without any retry
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
-            mon_data_dict = build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
+            mon_data_dict = build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
             # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
             json_node_list.append(mon_data_dict)
             # error ('None' in this case) with host and checktype is appended to global error list
@@ -403,7 +403,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         if error == 'None':
             # power usage metric is built and result is returned into a dictionary
             if power_usage != None:
-                mon_data_dict = build_power_usage_metric(power_usage,host)
+                mon_data_dict = build_power_usage_metric(metricTimeStamp,power_usage,host)
                 # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
                 json_node_list.append(mon_data_dict)
                 # error ('None' in this case) with host and checktype is appended to global error list
@@ -476,7 +476,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
                 cpukeys = cpu_temperature.keys()
                 cpuvals = cpu_temperature.values()
                 for (k,v) in zip(cpukeys, cpuvals):
-                    mon_data_dict = build_cpu_temperature_metric(k, v, host)
+                    mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
 
@@ -484,11 +484,11 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
                 cpukeys = inlet_temp.keys()
                 cpuvals = inlet_temp.values()
                 for (k,v) in zip (cpukeys,cpuvals):
-                    mon_data_dict = build_inlet_temperature_metric(k,v, host)
+                    mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
             
-            mon_data_dict = build_inlethealth_metric(inlet_health,tot_time,host,retry,error)
+            mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
@@ -496,11 +496,11 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
                 fankeys = fan_speed.keys()
                 fanvals = fan_speed.values()
                 for k,v in zip(fankeys,fanvals):
-                    mon_data_dict = build_fanspeed_metric(k,v,host)
+                    mon_data_dict = build_fanspeed_metric(metricTimeStamp,k,v,host)
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
 
-            mon_data_dict = build_fanhealth_metric(fan_health,tot_time,host,retry,error)
+            mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
         # else:
@@ -607,110 +607,110 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
 
         if error == 'None':
             
-            mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
+            mon_data_dict = build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
-            mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
+            mon_data_dict = build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
             
-            mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
+            mon_data_dict = build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
-            mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
+            mon_data_dict = build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
-            mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
+            mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
             json_node_list.append(mon_data_dict)
             error_list.append([host, checkType, error])
 
-        else:
-            retry += 1
-            #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
-            #time_out = initial_timeout*retry
-            host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
-            if error == 'None':
-                mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                error_list.append([host, checkType, error])
+        # else:
+        #     retry += 1
+        #     #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
+        #     #time_out = initial_timeout*retry
+        #     host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
+        #     if error == 'None':
+        #         mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
                 
-                mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
 
-                mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+        #         mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host, checkType, error])
 
-            else:
-                retry += 1
-                #print ("\nRetry:",retry,"Error:",error)                                                                                                                                  
-                #time_out = initial_timeout*retry
-                host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
-                if error =='None':
+        #     else:
+        #         retry += 1
+        #         #print ("\nRetry:",retry,"Error:",error)                                                                                                                                  
+        #         #time_out = initial_timeout*retry
+        #         host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
+        #         if error =='None':
 
-                    mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
                     
-                    mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                else:
-                    retry += 1
-                    #print ("\nRetry:",retry,"Error:",error)                                                                                                                              
-                    #time_out = initial_timeout*retry
-                    host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
+        #         else:
+        #             retry += 1
+        #             #print ("\nRetry:",retry,"Error:",error)                                                                                                                              
+        #             #time_out = initial_timeout*retry
+        #             host_health, cpu_health, mem_health, host_led_indicator, host_power_state, error  = get_system_health(host,conn_time_out,read_time_out,session)
                     
-                    if error != 'None':
-                        retry = None
+        #             if error != 'None':
+        #                 retry = None
 
-                    mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_host_health_metric(host_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_cpu_health_metric(cpu_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_mem_health_metric(mem_health,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
 
-                    mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
                     
-                    mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+        #             mon_data_dict = build_power_state_metric(host_power_state,tot_time,host,retry,error)
+        #             json_node_list.append(mon_data_dict)
+        #             error_list.append([host, checkType, error])
     
     ###############################################################################################                                                                                                           
     # Process "BMC" health check                                                                                                                                                                              
@@ -725,47 +725,47 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         #initial_error = error
 
         if error == 'None':                                                                                                                                                                 
-            mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                                            
+            mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
             json_node_list.append(mon_data_dict)                                                                                                                                          
             error_list.append([host, checkType, error])                                                                                                                                    
-        else:                                                                                                                                                                              
-            retry += 1                                                                                                                                                                    
-            #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
-            #time_out = initial_timeout*retry                                                                                                                                             
-            bmc_health, error = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                                                            
+        # else:                                                                                                                                                                              
+        #     retry += 1                                                                                                                                                                    
+        #     #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
+        #     #time_out = initial_timeout*retry                                                                                                                                             
+        #     bmc_health, error = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                                                            
                     
-            if error == 'None':                                                                                                                                                             
-                tot_time=time.time() - start_time                                                                                                                                         
-                mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                                        
-                json_node_list.append(mon_data_dict)     
-                #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                error_list.append([host, checkType, error])                                                                                                                                
-            else:                                                                                                                                                                          
-                retry += 1                                                                                                                                                                
-                #print ("\nRetry:",retry,"Error:",error)                                                                                                                                   
-                #time_out = initial_timeout*retry                                                                                                                                          
-                bmc_health, error  = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                  
+        #     if error == 'None':                                                                                                                                                             
+        #         tot_time=time.time() - start_time                                                                                                                                         
+        #         mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                                        
+        #         json_node_list.append(mon_data_dict)     
+        #         #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #         error_list.append([host, checkType, error])                                                                                                                                
+        #     else:                                                                                                                                                                          
+        #         retry += 1                                                                                                                                                                
+        #         #print ("\nRetry:",retry,"Error:",error)                                                                                                                                   
+        #         #time_out = initial_timeout*retry                                                                                                                                          
+        #         bmc_health, error  = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                  
                                                                                                                                                                                            
-                if error =='None':                                                                                                                                                           
-                    tot_time=time.time() - start_time                                                                                                                                     
-                    mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                    
-                    json_node_list.append(mon_data_dict)         
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error])                                                                                                                            
-                else:                                                                                                                                                                      
-                    retry += 1                                                                                                                                                            
-                    #print ("\nRetry:",retry,"Error:",error)                                                                                                                                                   
-                    #time_out = initial_timeout*retry                                                                                                                                      
-                    bmc_health, error  = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                                                             
-                    tot_time=time.time() - start_time
+        #         if error =='None':                                                                                                                                                           
+        #             tot_time=time.time() - start_time                                                                                                                                     
+        #             mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                    
+        #             json_node_list.append(mon_data_dict)         
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error])                                                                                                                            
+        #         else:                                                                                                                                                                      
+        #             retry += 1                                                                                                                                                            
+        #             #print ("\nRetry:",retry,"Error:",error)                                                                                                                                                   
+        #             #time_out = initial_timeout*retry                                                                                                                                      
+        #             bmc_health, error  = get_bmc_health(host,conn_time_out,read_time_out,session)                                                                                                                             
+        #             tot_time=time.time() - start_time
                     
-                    if error != 'None':
-                        retry = None
+        #             if error != 'None':
+        #                 retry = None
 
-                    mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                                    
-                    json_node_list.append(mon_data_dict)                         
-                    #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
-                    error_list.append([host, checkType, error]) 
+        #             mon_data_dict = build_bmc_health_metric(bmc_health,tot_time,host,retry,error)                                                                                                    
+        #             json_node_list.append(mon_data_dict)                         
+        #             #error="FINAL ERROR: "+error+"; INITIAL ERROR: "+initial_error
+        #             error_list.append([host, checkType, error]) 
     
     ###############################################################################################                                                              
     # Process "HPCJob" check type. This metric is not available via iDRAC                                                                                         
@@ -775,15 +775,15 @@ def getNodesData (host, checkType, json_node_list, error_list,session):
         job_data, error  = get_hpcjob_data(conn_time_out,read_time_out,session)
         
         if error == 'None':
-            timeStamp = int(datetime.now().timestamp())
+            #timeStamp = int(datetime.now().timestamp())
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
-            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp)
+            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,metricTimeStamp)
 
 ###############################################################################################                                                                                                               
 # Builds CPU power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
 ############################################################################################### 
 
-def build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error):
+def build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error):
     host = host.replace('100','101')
     mon_data_dict = {'measurement':'CPU_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
@@ -794,10 +794,10 @@ def build_cpupower_usage_metric(cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_
     mon_data_dict['fields']['CPUMaxPowerUsage'] = cpu_max_pwr_usage
 
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
-def build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error):
+def build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error):
     host = host.replace('100','101')
     mon_data_dict = {'measurement':'Memory_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
@@ -808,7 +808,7 @@ def build_mempower_usage_metric(mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_
     mon_data_dict['fields']['MemoryMaxPowerUsage'] = mem_max_pwr_usage
 
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
             
 def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
@@ -896,8 +896,10 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 
     print ("\n *** Updated Last Live JOBS: ", len(lastLiveJobs), " ****\n")
 
+    
+    
     with open(fName,'w') as writejobs:
-        lastLiveJobs = json.dump(lastLiveJobs, writejobs)
+        json.dump(lastLiveJobs, writejobs)
 
     client1 = InfluxDBClient(host='localhost', port=8086)
     client1.switch_database('hpcc_monitoring_db')
@@ -930,7 +932,6 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     error_list.append(['cluster', checkType, 'None'])
 
     #Cluster wide Jobs and Nodes power usage storage
-    
     # node_total_pwr = calc_currentnode_power(client1)
     # job_total_pwr,time = calc_currentjob_power(client1)
     
@@ -941,13 +942,13 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     #     error_list.append(['cluster_power_usage', checkType, 'None'])
     
 def updateFinishedJobs (finishedJob, client,timeStamp):
-    
     for fj in finishedJob:
-        print ("\n",fj,"\n")
-    #     result = client.query("SELECT jobs_list FROM Current_Jobs_ID ORDER BY DESC LIMIT 1;")
-    #     jobs = list(result.get_points())[0]['jobs_list'].split(',') 
-    #   client.write_points(json_body)
-    #    result = client.query('select * from cpu_load_short;')   
+        result = client.query("SELECT * FROM JobsInfo where JobId = "+fj+";")
+        res = list(result.get_points(measurement='JobsInfo'))
+        if res:
+            jInfo = [{'measurement': 'JobsInfo', 'time': res[0]['time'], 'fields': {'TotalNodes':res[0]['TotalNodes'],'JobName':res[0]['JobName'],'SubmitTime': res[0]['SubmitTime'], 'NodeList': res[0]['NodeList'],'User': res[0]['User'], 'StopTime':timeStamp,'StartTime': res[0]['StartTime'],'CPUCores':res[0]['CPUCores']}, 'tags': {'JobId': res[0]['JobId'],'Queue': res[0]['Queue']}}]
+            client.write_points(jInfo)
+ 
 
 def build_node_job_mapping(jsonJobList, newJobs, timeStamp):
     jsonNodeJobList = []
@@ -981,8 +982,8 @@ def build_node_job_mapping(jsonJobList, newJobs, timeStamp):
                         totalCores += int(jj['fields']['NodeList'].split('-')[1])
 
                 jsonNodeJobList.append({'measurement': 'NodeJobs','tags':{'NodeId':n},'fields':{'JobList':jobIDs},'time':timeStamp})
-    verify(jsonNodeJobList)
-    print("\nXXXX",len(jsonNodeJobList),"XXXX\n")
+    # verify(jsonNodeJobList)
+    # print("\nXXXX",len(jsonNodeJobList),"XXXX\n")
     return jsonNodeJobList
 
 # def build_node_job_mapping(jsonJobList,timeStamp):
@@ -1352,13 +1353,13 @@ def build_job_info_metric(job_info,host,error):
 # Builds host power state  metric by encapsulating the BMC health monitoring data into dictionary                                                              
 ###############################################################################################
             
-def build_power_state_metric(host_power_state,tot_time,host,retry,error):
+def build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Node_Power_State','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['power_state'] = host_power_state
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] = error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 
@@ -1366,13 +1367,13 @@ def build_power_state_metric(host_power_state,tot_time,host,retry,error):
 # Builds host LED indicator metric by encapsulating the BMC health monitoring data into dictionary                                                                
 ###############################################################################################                                                                                                                                                                                                                                 
 
-def build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error):
+def build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Node_LED_Indicator','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['led_indicator'] = host_led_indicator
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 
@@ -1380,26 +1381,26 @@ def build_led_indicator_metric(host_led_indicator,tot_time,host,retry,error):
 # Builds BMC health metric by encapsulating the BMC health monitoring data into dictionary                                                                        
 ###############################################################################################
  
-def build_bmc_health_metric(bmc_health,tot_time,host,retry,error):
+def build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'BMC_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['bmc_health_status'] = bmc_health
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 ###############################################################################################                                                                   
 # Builds inlet sensor health metric by encapsulating the inlet health monitoring data into dictionary                                                         
 ###############################################################################################
 
-def build_inlethealth_metric(inlet_health,tot_time,host,retry,error):
+def build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Inlet_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['inlet_health_status'] = inlet_health
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 
@@ -1407,39 +1408,39 @@ def build_inlethealth_metric(inlet_health,tot_time,host,retry,error):
 # Builds Host health metric by encapsulating the Host health monitoring data into dictionary                                                                     
 ############################################################################################### 
 
-def build_host_health_metric(host_health,tot_time,host,retry,error):
+def build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Node_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['host_health_status'] = host_health
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 ###############################################################################################                                                                   
 # Builds CPU health metric by encapsulating the CPU health monitoring data into dictionary                                                                        
 ############################################################################################### 
 
-def build_cpu_health_metric(cpu_health,tot_time,host,retry,error):
+def build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'CPU_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['cpu_health_status'] = cpu_health
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
 # Builds MEMORY health metric by encapsulating the MEMORY health monitoring data into dictionary                                                                                                              
 ############################################################################################### 
 
-def build_mem_health_metric(mem_health,tot_time,host,retry,error):
+def build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Memory_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     mon_data_dict['fields']['memory_health_status'] = mem_health
     mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
@@ -1493,7 +1494,7 @@ def get_hostip(hostname):
 # Builds fan speed metric by encapsulating the fan speed in RPM and other infos into dictionary                                                                                                               
 ############################################################################################### 
 
-def build_fanspeed_metric(fankey,val,host):
+def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey,'host':host},'time':None,'fields':{}}
     # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
@@ -1514,7 +1515,7 @@ def build_fanspeed_metric(fankey,val,host):
     #     mon_data_dict['fields']['fanLowerThresholdNonCritical'] = 'None'
     #     mon_data_dict['fields']['fanUpperThresholdNonCritical'] = 'None'
     mon_data_dict['fields']['Reading'] = val
-    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
+    mon_data_dict['time'] = metricTimeStamp
 
     return mon_data_dict
  
@@ -1522,7 +1523,7 @@ def build_fanspeed_metric(fankey,val,host):
 # Builds fan health metric by encapsulating the fan health and other infos into dictionary                                                                                                              
 ###############################################################################################  
 
-def build_fanhealth_metric(fan_health,tot_time,host,retry,error):
+def build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error):
     mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
     mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
 
@@ -1534,14 +1535,14 @@ def build_fanhealth_metric(fan_health,tot_time,host,retry,error):
 
     mon_data_dict['fields']['error'] =error
     mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['time'] = datetime.datetime.now().isoformat()
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
 # Builds cpu temperature metric by encapsulating the cpu temperature and other infos into dictionary                                                                                                          
 ###############################################################################################  
 
-def build_cpu_temperature_metric(cpukey,tempval, host):
+def build_cpu_temperature_metric(metricTimeStamp,cpukey,tempval, host):
     cpukey = cpukey.split(" ")
     cpukey = "".join(cpukey)
 
@@ -1561,7 +1562,7 @@ def build_cpu_temperature_metric(cpukey,tempval, host):
 
     # mon_data_dict['fields']['retry'] = retry
     mon_data_dict['fields']['Reading'] = tempval
-    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
 
@@ -1569,13 +1570,13 @@ def build_cpu_temperature_metric(cpukey,tempval, host):
 # Inlet temperature metric by encapsulating the inlet temperature and other infos into dictionary                                                                                       
 ###############################################################################################                                                                                               
 
-def build_inlet_temperature_metric(inlet_key,inlet_val, host):
+def build_inlet_temperature_metric(metricTimeStamp,inlet_key,inlet_val, host):
     inlet_key = inlet_key.split(" ")
     inlet_key = "".join(inlet_key)
     mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
     
     mon_data_dict['fields']['Reading'] = inlet_val
-    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
 
        
@@ -1583,10 +1584,10 @@ def build_inlet_temperature_metric(inlet_key,inlet_val, host):
 # Builds power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
 ############################################################################################### 
 
-def build_power_usage_metric(power_usage,host):
+def build_power_usage_metric(metricTimeStamp,power_usage,host):
     mon_data_dict = {'measurement':'Power','tags':{'Sensor':'NodePower','NodeID':host},'time':None,'fields':{}}
     mon_data_dict['fields']['Reading'] = power_usage
-    mon_data_dict['time'] = int(datetime.datetime.now().timestamp())
+    mon_data_dict['time'] = metricTimeStamp
     return mon_data_dict
     
 
@@ -1597,7 +1598,7 @@ def build_power_usage_metric(power_usage,host):
 # Each thread calls getNodesData function passes the host and corresponding check,        #
 # json_node_list, error_list, and session object.                                                                                     
 ###########################################################################################
-def core_to_threads (input_data,session):
+def core_to_threads (input_data,session,ts):
     
     warnings.filterwarnings('ignore', '.*', UserWarning,'warnings_filtering',)
     try:
@@ -1610,7 +1611,7 @@ def core_to_threads (input_data,session):
             host = host_info[0]
             checkType = host_info[1]
             
-            a = Thread(target = getNodesData, args=(host, checkType, json_node_list, error_list,session, ))
+            a = Thread(target = getNodesData, args=(host, checkType, json_node_list, error_list,session, ts,))
             threads.append(a)
             threads[thread_id].start()
             thread_id += 1
@@ -1631,7 +1632,7 @@ def core_to_threads (input_data,session):
 # each and last one (8th) will have 61. The remainder will be added to last core.         #
 ###########################################################################################
 
-def  parallelizeTasks (input_data,session):
+def  parallelizeTasks (input_data,session,ts):
     
     warnings.filterwarnings('ignore', '.*', UserWarning,'warnings_filtering',)
     try:
@@ -1674,7 +1675,7 @@ def  parallelizeTasks (input_data,session):
 
         #print (len(jobs),jobs)
         # Run parallel jobs across all the cores by calling core_to_threads
-        results = [pool.apply_async( core_to_threads, args=(j,session,) ) for j in jobs]
+        results = [pool.apply_async( core_to_threads, args=(j,session,ts,) ) for j in jobs]
 
         # Process results
         for result in results:
@@ -1765,7 +1766,7 @@ def launch (taskList,session,startTime,hostList):
     #ts = datetime.now() + timedelta(seconds=5)
     #ts = ts.isoformat()
     ts = int(datetime.now().timestamp())
-    print(ts)
+    
 
 
     '''
@@ -1786,7 +1787,7 @@ def launch (taskList,session,startTime,hostList):
     '''
 
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
-    objList, error_list =  parallelizeTasks(taskList,session)
+    objList, error_list =  parallelizeTasks(taskList,session,ts)
     
     #print("\nstart cluster metric\n")
     #print (objList)
