@@ -477,7 +477,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpukeys = cpu_temperature.keys()
                 cpuvals = cpu_temperature.values()
                 for (k,v) in zip(cpukeys, cpuvals):
-                    if v == 'None':
+                    if v == 'None' or v == None:
                         continue
                     mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
                     json_node_list.append(mon_data_dict)
