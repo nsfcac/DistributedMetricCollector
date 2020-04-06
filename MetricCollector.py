@@ -1502,7 +1502,7 @@ def get_hostip(hostname):
 ############################################################################################### 
 
 def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
-    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey,'host':host},'time':None,'fields':{}}
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey,'NodeId':host},'time':None,'fields':{}}
     # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
     # if fan_speed != None:
@@ -1553,7 +1553,7 @@ def build_cpu_temperature_metric(metricTimeStamp,cpukey,tempval, host):
     cpukey = cpukey.split(" ")
     cpukey = "".join(cpukey)
 
-    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':cpukey,'host':host},'time':None,'fields':{}}
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':cpukey,'NodeId':host},'time':None,'fields':{}}
     # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     # if cpu_temperature != None:
     #     cpukeys = cpu_temperature.keys()
@@ -1580,7 +1580,7 @@ def build_cpu_temperature_metric(metricTimeStamp,cpukey,tempval, host):
 def build_inlet_temperature_metric(metricTimeStamp,inlet_key,inlet_val, host):
     inlet_key = inlet_key.split(" ")
     inlet_key = "".join(inlet_key)
-    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'host':host,},'time':None,'fields':{}}
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':inlet_key,'NodeId':host,},'time':None,'fields':{}}
     
     mon_data_dict['fields']['Reading'] = inlet_val
     mon_data_dict['time'] = metricTimeStamp
