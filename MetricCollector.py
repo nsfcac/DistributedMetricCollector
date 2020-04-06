@@ -260,7 +260,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         pwr_thresholds = {}
 
         #pwr_thresholds.update ({'PowerCapacityWatts':data['PowerControl'][0][u'PowerCapacityWatts']})
-        pwr_thresholds.update ({'PowerRequestedWatts':data['PowerControl'][0][u'PowerRequestedWatts']})
+        #pwr_thresholds.update ({'PowerRequestedWatts':data['PowerControl'][0][u'PowerRequestedWatts']})
         pwr_thresholds.update ({'PowerAvailableWatts':data['PowerControl'][0][u'PowerAvailableWatts']})
         #pwr_thresholds.update ({'PowerMetrics':data['PowerControl'][0][u'PowerMetrics']})
         #pwr_thresholds.update ({'PowerLimit':data['PowerControl'][0][u'PowerLimit']})
@@ -1798,10 +1798,11 @@ def launch (taskList,session,startTime,hostList):
         print (obj)
         print("\n")
 
-    print ("\n\n LOG :: Total Metrics:",len(objList))
+    #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
+    jsonObjList = objList
     # print ("\n\nMetrics:",objList)
-    return     
+         
         
         # Log of (sheets) responses is created for all checks except HPCJob
     '''
@@ -1817,7 +1818,7 @@ def launch (taskList,session,startTime,hostList):
     
        
     # PUSH DATA TO NAGIOS IN PASSIVE MODE
-    nagios_external_agent(jsonObjList, error_list)
+    # nagios_external_agent(jsonObjList, error_list)
     
     
     #TESTING START
@@ -1888,9 +1889,11 @@ def launch (taskList,session,startTime,hostList):
         # storing results in InfluxDBClient                                                                                                                           
     client = InfluxDBClient(host='localhost', port=8086)
         #client.drop_database('hpcc_test')
-        #client.create_database('hpcc_monitoring_db')                                                                                                        
+    client.create_database('test_quanah_db')                                                                                                        
 
-    client.switch_database('hpcc_monitoring_db')                                                                                                                                           
+    #client.switch_database('hpcc_monitoring_db')
+    client.switch_database('test_quanah_db')
+                                                                                                                                               
     client.write_points(jsonObjList,time_precision='ms')                                                                                                                              
         
         
