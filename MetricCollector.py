@@ -942,7 +942,8 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     
 def updateFinishedJobs (finishedJob, client,timeStamp):
     
-    # for fj in finishedJob:
+    for fj in finishedJob:
+        print ("\n",fj,"\n")
     #     result = client.query("SELECT jobs_list FROM Current_Jobs_ID ORDER BY DESC LIMIT 1;")
     #     jobs = list(result.get_points())[0]['jobs_list'].split(',') 
     #   client.write_points(json_body)
