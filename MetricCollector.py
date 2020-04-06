@@ -907,7 +907,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
         json.dump(lastLiveJobs, writejobs)
 
     client1 = InfluxDBClient(host='localhost', port=8086)
-    client1.switch_database('hpcc_monitoring_db')
+    client1.switch_database('test_quanah_db')
 
     updateFinishedJobs (finishedJobs, client1, timeStamp)
             
