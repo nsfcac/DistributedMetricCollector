@@ -259,7 +259,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         
         pwr_thresholds = {}
 
-        pwr_thresholds.update ({'PowerCapacityWatts':data['PowerControl'][0][u'PowerCapacityWatts']})
+        #pwr_thresholds.update ({'PowerCapacityWatts':data['PowerControl'][0][u'PowerCapacityWatts']})
         pwr_thresholds.update ({'PowerRequestedWatts':data['PowerControl'][0][u'PowerRequestedWatts']})
         pwr_thresholds.update ({'PowerAvailableWatts':data['PowerControl'][0][u'PowerAvailableWatts']})
         #pwr_thresholds.update ({'PowerMetrics':data['PowerControl'][0][u'PowerMetrics']})
@@ -488,9 +488,9 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
             
-            mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host, checkType, error])
+            # mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
+            # json_node_list.append(mon_data_dict)
+            # error_list.append([host, checkType, error])
 
             if fan_speed != None:
                 fankeys = fan_speed.keys()
@@ -500,9 +500,9 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
 
-            mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host, checkType, error])
+            # mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
+            # json_node_list.append(mon_data_dict)
+            # error_list.append([host, checkType, error])
         # else:
         #     retry += 1
         #     #print ("\nRetry:",retry,"Error:",error)
