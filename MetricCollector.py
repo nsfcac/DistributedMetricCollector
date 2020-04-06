@@ -259,7 +259,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         
         pwr_thresholds = {}
 
-        if data:
+        if len(data[u'PowerControl'][0][u'PowerConsumedWatts']) == 0:
         #pwr_thresholds.update ({'PowerCapacityWatts':data['PowerControl'][0][u'PowerCapacityWatts']})
         #pwr_thresholds.update ({'PowerRequestedWatts':data['PowerControl'][0][u'PowerRequestedWatts']})
         #pwr_thresholds.update ({'PowerAvailableWatts':data['PowerControl'][0][u'PowerAvailableWatts']})
@@ -486,11 +486,11 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpukeys = inlet_temp.keys()
                 cpuvals = inlet_temp.values()
                 for (k,v) in zip (cpukeys,cpuvals):
-                    if v:
-                        print ("\nINLET",v)
-                        mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
-                        json_node_list.append(mon_data_dict)
-                        error_list.append([host, checkType, error])
+                    
+                        
+                    mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
             
             # mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
             # json_node_list.append(mon_data_dict)
