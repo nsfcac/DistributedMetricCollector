@@ -949,13 +949,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
 def updateFinishedJobs (finishedJob, client,timeStamp):
     for fj in finishedJob:
         
-        #fj = urllib3.parse.quote(f"'{fj}'")
         fj = "'%s'" % fj
         result = client.query("SELECT * FROM JobsInfo where JobId = "+fj+";")
         res = list(result.get_points(measurement='JobsInfo'))
-        print ("\nFJ:",fj,"\n")
-        print ("\nRES:",res,"\n")
-        print ("\nRES-TIME:",res[0]['time'],"\n")
         if res:
             jInfo = [{'measurement': 'JobsInfo', 'time': res[0]['time'], 'fields': {'TotalNodes':res[0]['TotalNodes'],'JobName':res[0]['JobName'],'SubmitTime': res[0]['SubmitTime'], 'NodeList': res[0]['NodeList'],'User': res[0]['User'], 'StopTime':timeStamp,'StartTime': res[0]['StartTime'],'CPUCores':res[0]['CPUCores']}, 'tags': {'JobId': res[0]['JobId'],'Queue': res[0]['Queue']}}]
             client.write_points(jInfo)
