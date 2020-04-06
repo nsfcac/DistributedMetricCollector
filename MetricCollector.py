@@ -487,7 +487,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpuvals = inlet_temp.values()
                 for (k,v) in zip (cpukeys,cpuvals):
                     
-                    if v != None and v != 'None':    
+                    if v != None or v != 'None':    
                         mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
                         json_node_list.append(mon_data_dict)
                         error_list.append([host, checkType, error])
