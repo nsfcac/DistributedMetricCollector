@@ -19,7 +19,6 @@ import time
 
 from influxdb import InfluxDBClient
 
-import urllib2
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -949,9 +948,9 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     
 def updateFinishedJobs (finishedJob, client,timeStamp):
     for fj in finishedJob:
-        fj = urllib2.quote("'{}'".format(fj))
-
         
+        fj = urllib3.parse.quote(f"'{fj}'")
+
         result = client.query("SELECT * FROM JobsInfo where JobId = "+fj+";")
         res = list(result.get_points(measurement='JobsInfo'))
         print ("\nFJ:",fj,"\n")
