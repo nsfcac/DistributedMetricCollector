@@ -261,7 +261,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
 
         #pwr_thresholds.update ({'PowerCapacityWatts':data['PowerControl'][0][u'PowerCapacityWatts']})
         #pwr_thresholds.update ({'PowerRequestedWatts':data['PowerControl'][0][u'PowerRequestedWatts']})
-        pwr_thresholds.update ({'PowerAvailableWatts':data['PowerControl'][0][u'PowerAvailableWatts']})
+        #pwr_thresholds.update ({'PowerAvailableWatts':data['PowerControl'][0][u'PowerAvailableWatts']})
         #pwr_thresholds.update ({'PowerMetrics':data['PowerControl'][0][u'PowerMetrics']})
         #pwr_thresholds.update ({'PowerLimit':data['PowerControl'][0][u'PowerLimit']})
         #pwr_thresholds.update ({'PowerAllocatedWatts':data['PowerControl'][0][u'PowerAllocatedWatts']})
@@ -484,9 +484,10 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpukeys = inlet_temp.keys()
                 cpuvals = inlet_temp.values()
                 for (k,v) in zip (cpukeys,cpuvals):
-                    mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+                    if v:
+                        mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
+                        json_node_list.append(mon_data_dict)
+                        error_list.append([host, checkType, error])
             
             # mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
             # json_node_list.append(mon_data_dict)
@@ -1888,7 +1889,7 @@ def launch (taskList,session,startTime,hostList):
                                                                                                 
         # storing results in InfluxDBClient                                                                                                                           
     client = InfluxDBClient(host='localhost', port=8086)
-        #client.drop_database('hpcc_test')
+    client.drop_database('test_quanah_db')
     client.create_database('test_quanah_db')                                                                                                        
 
     #client.switch_database('hpcc_monitoring_db')
