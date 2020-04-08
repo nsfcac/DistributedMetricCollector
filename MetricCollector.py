@@ -604,10 +604,11 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         start_time = time.time()
         retry=0
         #initial_timeout = time_out        
-
+        print ("\nBefore\n")
         host_health, cpu_health, mem_health, host_led_indicator,host_power_state,  error  = get_system_health(host,conn_time_out,read_time_out,session)
         tot_time=time.time() - start_time
-        
+        print("\nHostHealth: ",host_health)
+        print("\nError: ",error)
         #initial_error = error
 
         if error == 'None':
