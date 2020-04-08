@@ -604,11 +604,9 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         start_time = time.time()
         retry=0
         #initial_timeout = time_out        
-        print ("\nBefore\n")
+        
         host_health, cpu_health, mem_health, host_led_indicator,host_power_state,  error  = get_system_health(host,conn_time_out,read_time_out,session)
         tot_time=time.time() - start_time
-        print("\nHostHealth: ",host_health)
-        print("\nError: ",error)
         #initial_error = error
 
         if error == 'None':
@@ -733,7 +731,9 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         if error == 'None':                                                                                                                                                                 
             mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
             json_node_list.append(mon_data_dict)                                                                                                                                          
-            error_list.append([host, checkType, error])                                                                                                                                    
+            error_list.append([host, checkType, error])      
+        else:
+            error_list.append([host, checkType, error])                                                                                                                              
         # else:                                                                                                                                                                              
         #     retry += 1                                                                                                                                                                    
         #     #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
@@ -1792,7 +1792,7 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    hostList = ['10.100.10.25']
+    hostList = ['10.100.10.26']
     startTime = time.time()
     for check in checkList:
         # as HPCJob check is not part of iDRAC so it will be considered single task
