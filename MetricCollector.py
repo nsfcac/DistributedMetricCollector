@@ -1369,13 +1369,17 @@ def build_job_info_metric(job_info,host,error):
 ###############################################################################################
             
 def build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Node_Power_State','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['power_state'] = host_power_state
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] = error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'PowerState','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = host_power_state
     return mon_data_dict
+    # mon_data_dict = {'measurement':'Node_Power_State','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['power_state'] = host_power_state
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] = error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
+    
 
 
 ###############################################################################################                                                                   
@@ -1383,13 +1387,16 @@ def build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retr
 ###############################################################################################                                                                                                                                                                                                                                 
 
 def build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Node_LED_Indicator','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['led_indicator'] = host_led_indicator
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'IndicatorLEDStatus','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = host_led_indicator
     return mon_data_dict
+    # mon_data_dict = {'measurement':'Node_LED_Indicator','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['led_indicator'] = host_led_indicator
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 
 ###############################################################################################                                                                   
@@ -1397,26 +1404,32 @@ def build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,
 ###############################################################################################
  
 def build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'BMC_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['bmc_health_status'] = bmc_health
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'BMCHealth','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = bmc_health
     return mon_data_dict
+    # mon_data_dict = {'measurement':'BMC_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['bmc_health_status'] = bmc_health
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 ###############################################################################################                                                                   
 # Builds inlet sensor health metric by encapsulating the inlet health monitoring data into dictionary                                                         
 ###############################################################################################
 
 def build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Inlet_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['inlet_health_status'] = inlet_health
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'InletHealth','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = inlet_health
     return mon_data_dict
+    # mon_data_dict = {'measurement':'Inlet_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['inlet_health_status'] = inlet_health
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 
 ###############################################################################################                                                                   
@@ -1424,38 +1437,47 @@ def build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,er
 ############################################################################################### 
 
 def build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Node_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['host_health_status'] = host_health
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'NodeHealth','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = host_health
     return mon_data_dict
+    # mon_data_dict = {'measurement':'Node_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['host_health_status'] = host_health
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 ###############################################################################################                                                                   
 # Builds CPU health metric by encapsulating the CPU health monitoring data into dictionary                                                                        
 ############################################################################################### 
 
 def build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'CPU_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['cpu_health_status'] = cpu_health
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'CPUHealth','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = cpu_health
     return mon_data_dict
+    # mon_data_dict = {'measurement':'CPU_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['cpu_health_status'] = cpu_health
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 ###############################################################################################                                                                                                               
 # Builds MEMORY health metric by encapsulating the MEMORY health monitoring data into dictionary                                                                                                              
 ############################################################################################### 
 
 def build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Memory_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    mon_data_dict['fields']['memory_health_status'] = mem_health
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    # mon_data_dict = {'measurement':'Memory_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    # mon_data_dict['fields']['memory_health_status'] = mem_health
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':'MemHealth','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = mem_health
     return mon_data_dict
 
 ###############################################################################################                                                                                                               
@@ -1539,19 +1561,29 @@ def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
 ###############################################################################################  
 
 def build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error):
-    mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-
+    
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':None,'NodeId': host},'time':metricTimeStamp,'fields':{}}
     if fan_health != None:
         fankeys = fan_health.keys()
         fanvals = fan_health.values()
         for k,v in zip(fankeys,fanvals):
-            mon_data_dict['fields'][k] = v
-
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['fields']['retry'] = retry
-    mon_data_dict['time'] = metricTimeStamp
+            mon_data_dict['tags']['Sensor'] = k
+            mon_data_dict['fields']['Reading'] = v
     return mon_data_dict
+
+    # mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+
+    # if fan_health != None:
+    #     fankeys = fan_health.keys()
+    #     fanvals = fan_health.values()
+    #     for k,v in zip(fankeys,fanvals):
+    #         mon_data_dict['fields'][k] = v
+
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['fields']['retry'] = retry
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
 
 ###############################################################################################                                                                                                               
 # Builds cpu temperature metric by encapsulating the cpu temperature and other infos into dictionary                                                                                                          
@@ -1749,7 +1781,7 @@ def main():
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['MEMPWR','CPUPWR']
+    checkList = ['BMCHealth','SystemHealth']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
