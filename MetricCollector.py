@@ -1792,7 +1792,7 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    hostList = ['10.101.10.25']
+    
     startTime = time.time()
     for check in checkList:
         # as HPCJob check is not part of iDRAC so it will be considered single task
@@ -1806,7 +1806,7 @@ def main():
             continue
         for host in hostList:
             taskList.append([host,check])
-    print (taskList)
+    
     launch (taskList,session,startTime,hostList)   
 
 def launch (taskList,session,startTime,hostList):    
@@ -1876,7 +1876,7 @@ def launch (taskList,session,startTime,hostList):
     
     #TESTING START
         
-    print("\n Total Time in executing total tasks: ",len(taskList),"is: "," %s Seconds " % round((time.time() - startTime),2))
+    print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(jsonJobList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
     return    
         #Power Usage by nodes across cluster:
