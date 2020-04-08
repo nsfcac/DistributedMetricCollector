@@ -493,10 +493,6 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                         json_node_list.append(mon_data_dict)
                         error_list.append([host, checkType, error])
             
-            # mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
-            # json_node_list.append(mon_data_dict)
-            # error_list.append([host, checkType, error])
-
             if fan_speed != None:
                 fankeys = fan_speed.keys()
                 fanvals = fan_speed.values()
@@ -505,9 +501,15 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
 
-            # mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
-            # json_node_list.append(mon_data_dict)
-            # error_list.append([host, checkType, error])
+            if inlet_health != None:
+                mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
+                json_node_list.append(mon_data_dict)
+                error_list.append([host, checkType, error])
+
+            if fan_health != None:
+                mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
+                json_node_list.append(mon_data_dict)
+                error_list.append([host, checkType, error])
         # else:
         #     retry += 1
         #     #print ("\nRetry:",retry,"Error:",error)
