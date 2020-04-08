@@ -1792,7 +1792,7 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    hostList = ['10.100.10.26']
+    hostList = ['10.100.10.25']
     startTime = time.time()
     for check in checkList:
         # as HPCJob check is not part of iDRAC so it will be considered single task
