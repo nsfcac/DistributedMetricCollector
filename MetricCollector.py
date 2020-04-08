@@ -1539,7 +1539,7 @@ def get_hostip(hostname):
 ############################################################################################### 
 
 def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
-    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey,'NodeId':host},'time':None,'fields':{}}
+    mon_data_dict = {'measurement':'Thermal','tags':{'Sensor':fankey+"Speed",'NodeId':host},'time':None,'fields':{}}
     # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
     
     # if fan_speed != None:
@@ -1569,7 +1569,7 @@ def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
 
 def build_fanhealth_metric(metricTimeStamp,fan_key, fan_health_status,tot_time,host,retry,error):
     
-    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':fan_key,'NodeId': host},'time':metricTimeStamp,'fields':{'Reading':fan_health_status}}
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':fan_key+"Health",'NodeId': host},'time':metricTimeStamp,'fields':{'Reading':fan_health_status}}
     return mon_data_dict
 
     # mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
@@ -1779,7 +1779,7 @@ def main():
     #REMOVEME
     checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
-    # hostList = ['10.101.10.25']
+    hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
     checkList = ['BMCHealth','SystemHealth','Thermal','Power','MEMPWR','CPUPWR']
@@ -1876,7 +1876,7 @@ def launch (taskList,session,startTime,hostList):
     
     #TESTING START
         
-    print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(jsonJobList),"is: "," %s Seconds " % round((time.time() - startTime),2))
+    print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(jsonObjList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
     return    
         #Power Usage by nodes across cluster:
