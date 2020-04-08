@@ -1779,7 +1779,7 @@ def main():
     #REMOVEME
     checkList = ['BMCHealth','SystemHealth','HPCJob','Thermal','Power','MEMPWR','CPUPWR']
 
-    hostList = ['10.101.10.25']
+    # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
     checkList = ['BMCHealth','SystemHealth','Thermal','Power','MEMPWR','CPUPWR']
