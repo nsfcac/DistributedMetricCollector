@@ -234,7 +234,7 @@ def get_thermal(host,conn_time_out,read_time_out,session):
         #print ("cpu temp:",cpu_temp)                                                                                                                                                                        
         #print ("inlet temp:",inlet_temp)                                                                                                                                                                    
         #print ("inlet health:",inlet_health)                                                                                                                                                                
-        print ("\n FAN HEALTH: ", fan_health)
+        
 
         return cpu_temp, inlet_temp, fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health,str(None)                                                        
 
@@ -502,14 +502,18 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                     error_list.append([host, checkType, error])
 
             if inlet_health != None:
+                print ("\nINLET HEALTH: ", inlet_health)
                 mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
                 json_node_list.append(mon_data_dict)
                 error_list.append([host, checkType, error])
 
             if fan_health != None:
-                mon_data_dict = build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+                fankeys = fan_health.keys()
+                fanvals = fan_health.values()
+                for k,v in zip(fankeys,fanvals):
+                    mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
         # else:
         #     retry += 1
         #     #print ("\nRetry:",retry,"Error:",error)
@@ -1563,15 +1567,9 @@ def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
 # Builds fan health metric by encapsulating the fan health and other infos into dictionary                                                                                                              
 ###############################################################################################  
 
-def build_fanhealth_metric(metricTimeStamp,fan_health,tot_time,host,retry,error):
+def build_fanhealth_metric(metricTimeStamp,fan_key, fan_health_status,tot_time,host,retry,error):
     
-    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':None,'NodeId': host},'time':metricTimeStamp,'fields':{}}
-    if fan_health != None:
-        fankeys = fan_health.keys()
-        fanvals = fan_health.values()
-        for k,v in zip(fankeys,fanvals):
-            mon_data_dict['tags']['Sensor'] = k
-            mon_data_dict['fields']['Reading'] = v
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':fan_key,'NodeId': host},'time':metricTimeStamp,'fields':{'Sensor':fan_health_status}}
     return mon_data_dict
 
     # mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
