@@ -234,7 +234,7 @@ def get_thermal(host,conn_time_out,read_time_out,session):
         #print ("cpu temp:",cpu_temp)                                                                                                                                                                        
         #print ("inlet temp:",inlet_temp)                                                                                                                                                                    
         #print ("inlet health:",inlet_health)                                                                                                                                                                
-
+        print ("\n FAN HEALTH: ", fan1_health)
 
         return cpu_temp, inlet_temp, fan_speed, fan_health, cpu_temp_thresholds, fan_speed_thresholds, inlet_temp_thresholds, inlet_health,str(None)                                                        
 
