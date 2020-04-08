@@ -790,31 +790,39 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
 
 def build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error):
     host = host.replace('100','101')
-    mon_data_dict = {'measurement':'CPU_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    
-    mon_data_dict['fields']['CPUAveragePowerUsage'] = cpu_avg_pwr_usage
-    mon_data_dict['fields']['CPUCurrentPowerUsage'] = cpu_cur_pwr_usage
-    mon_data_dict['fields']['CPUMinPowerUsage'] = cpu_min_pwr_usage
-    mon_data_dict['fields']['CPUMaxPowerUsage'] = cpu_max_pwr_usage
-
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'Power','tags':{'Sensor':'CPUPowerUsage','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = cpu_cur_pwr_usage
     return mon_data_dict
+    # mon_data_dict = {'measurement':'CPU_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    
+    # mon_data_dict['fields']['CPUAveragePowerUsage'] = cpu_avg_pwr_usage
+    # mon_data_dict['fields']['CPUCurrentPowerUsage'] = cpu_cur_pwr_usage
+    # mon_data_dict['fields']['CPUMinPowerUsage'] = cpu_min_pwr_usage
+    # mon_data_dict['fields']['CPUMaxPowerUsage'] = cpu_max_pwr_usage
+
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
+
+    
 
 def build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error):
     host = host.replace('100','101')
-    mon_data_dict = {'measurement':'Memory_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
-    mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
-    
-    mon_data_dict['fields']['MemoryAveragePowerUsage'] = mem_avg_pwr_usage
-    mon_data_dict['fields']['MemoryCurrentPowerUsage'] = mem_cur_pwr_usage
-    mon_data_dict['fields']['MemoryMinPowerUsage'] = mem_min_pwr_usage
-    mon_data_dict['fields']['MemoryMaxPowerUsage'] = mem_max_pwr_usage
-
-    mon_data_dict['fields']['error'] =error
-    mon_data_dict['time'] = metricTimeStamp
+    mon_data_dict = {'measurement':'Power','tags':{'Sensor':'MemPowerUsage','NodeId': host},'time':metricTimeStamp,'fields':{}}
+    mon_data_dict['fields']['Reading'] = mem_cur_pwr_usage
     return mon_data_dict
+    # mon_data_dict = {'measurement':'Memory_Power_Usage','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
+    # mon_data_dict['fields']['GET_processing_time'] = round(tot_time,2)
+    
+    # mon_data_dict['fields']['MemoryAveragePowerUsage'] = mem_avg_pwr_usage
+    # mon_data_dict['fields']['MemoryCurrentPowerUsage'] = mem_cur_pwr_usage
+    # mon_data_dict['fields']['MemoryMinPowerUsage'] = mem_min_pwr_usage
+    # mon_data_dict['fields']['MemoryMaxPowerUsage'] = mem_max_pwr_usage
+
+    # mon_data_dict['fields']['error'] =error
+    # mon_data_dict['time'] = metricTimeStamp
+    # return mon_data_dict
             
 def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
     jsonJobList = []
@@ -1741,7 +1749,7 @@ def main():
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['HPCJob','Thermal','Power']
+    checkList = ['MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1751,7 +1759,7 @@ def main():
         launch(hostList,checkList, taskList,session,iteration)
     '''
      # each check is combined with each host. TaskList is nothing but a list of sublists of host and check
-    
+    hostList = ['10.100.10.25']
     startTime = time.time()
     for check in checkList:
         # as HPCJob check is not part of iDRAC so it will be considered single task
@@ -1804,7 +1812,9 @@ def launch (taskList,session,startTime,hostList):
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
         print (obj)
         print("\n")
-
+    
+    return
+    
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     jsonObjList = objList
