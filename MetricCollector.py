@@ -1805,7 +1805,6 @@ def main():
             continue
         for host in hostList:
             taskList.append([host,check])
-    print (taskList)
     launch (taskList,session,startTime,hostList)   
 
 def launch (taskList,session,startTime,hostList):    
@@ -1843,6 +1842,11 @@ def launch (taskList,session,startTime,hostList):
     for obj in objList:
     #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
         print (obj)
+        print("\n")
+
+    for err in error_list:
+    #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+        print (err)
         print("\n")
     
     return
