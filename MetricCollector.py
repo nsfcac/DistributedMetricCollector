@@ -510,9 +510,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
             if fan_health != None:
                 fankeys = fan_health.keys()
                 fanvals = fan_health.values()
-                print ("\nINLET HEALTH: ", fan_health)
                 for k,v in zip(fankeys,fanvals):
-                    print ("\nINLET HEALTH: ", k,v)
                     mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
@@ -1784,7 +1782,7 @@ def main():
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['BMCHealth','SystemHealth','Thermal']
+    checkList = ['BMCHealth','SystemHealth','Thermal','Power','MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
@@ -1802,7 +1800,7 @@ def main():
             taskList.append([hostList,check])
             continue
         elif check == 'MEMPWR' or check == 'CPUPWR':
-            hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
+            hlist = ['10.100.10.25']
             for h in hlist:
                 taskList.append([h,check])        
             continue
@@ -1852,8 +1850,6 @@ def launch (taskList,session,startTime,hostList):
         print (err)
         print("\n")
     
-    return
-    
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     jsonObjList = objList
@@ -1881,7 +1877,7 @@ def launch (taskList,session,startTime,hostList):
         
     print("\n Total Time in executing total tasks: ",len(taskList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
-        
+    return    
         #Power Usage by nodes across cluster:
         #calc_currentnode_power(jsonObjList)
 
