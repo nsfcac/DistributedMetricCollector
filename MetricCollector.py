@@ -502,7 +502,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                     error_list.append([host, checkType, error])
 
             if inlet_health != None:
-                print ("\nINLET HEALTH: ", inlet_health)
+                
                 mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
                 json_node_list.append(mon_data_dict)
                 error_list.append([host, checkType, error])
@@ -510,7 +510,9 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
             if fan_health != None:
                 fankeys = fan_health.keys()
                 fanvals = fan_health.values()
+                print ("\nINLET HEALTH: ", fan_health)
                 for k,v in zip(fankeys,fanvals):
+                    print ("\nINLET HEALTH: ", k,v)
                     mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
                     json_node_list.append(mon_data_dict)
                     error_list.append([host, checkType, error])
@@ -1569,7 +1571,7 @@ def build_fanspeed_metric(metricTimeStamp,fankey,val,host):
 
 def build_fanhealth_metric(metricTimeStamp,fan_key, fan_health_status,tot_time,host,retry,error):
     
-    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':fan_key,'NodeId': host},'time':metricTimeStamp,'fields':{'Sensor':fan_health_status}}
+    mon_data_dict = {'measurement':'HealthMetrics','tags':{'Sensor':fan_key,'NodeId': host},'time':metricTimeStamp,'fields':{'Reading':fan_health_status}}
     return mon_data_dict
 
     # mon_data_dict = {'measurement':'Fan_Health','tags':{'cluster':'quanah','host':host,'location':'ESB'},'time':None,'fields':{}}
