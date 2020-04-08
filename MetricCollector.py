@@ -1805,7 +1805,7 @@ def main():
             continue
         for host in hostList:
             taskList.append([host,check])
-
+    print (taskList)
     launch (taskList,session,startTime,hostList)   
 
 def launch (taskList,session,startTime,hostList):    
