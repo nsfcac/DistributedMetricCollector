@@ -312,7 +312,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
     error=""
     # Based on our experience, 13G iDRAC takes 3 to 5 seconds to process a Redfish API call so
     # so in order to make monitoring more responsive, initial timeout is set to 6 seconds
-    conn_time_out=15
+    conn_time_out=20
     read_time_out=40
 
 
@@ -1806,6 +1806,7 @@ def main():
             continue
         for host in hostList:
             taskList.append([host,check])
+    print (taskList)
     launch (taskList,session,startTime,hostList)   
 
 def launch (taskList,session,startTime,hostList):    
