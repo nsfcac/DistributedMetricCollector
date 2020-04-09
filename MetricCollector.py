@@ -2262,7 +2262,7 @@ def nagios_external_agent(jsonObjList, error_list):
         timestamp = int(time.time())
 
         if(check_service_description == "NodeHealth"):
-            health_status =jsonObj['fields']['Readings']
+            health_status =jsonObj['fields']['Reading']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
@@ -2271,7 +2271,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "PowerState"):
-            health_status =jsonObj['fields']['Readings']
+            health_status =jsonObj['fields']['Reading']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
@@ -2287,7 +2287,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "IndicatorLEDStatus"):
-            indicator =jsonObj['fields']['Readings']
+            indicator =jsonObj['fields']['Reading']
             if indicator == "Lit":
                 return_code = 2
                 output = "Node Indicator LED status is Lit!"
@@ -2311,7 +2311,7 @@ def nagios_external_agent(jsonObjList, error_list):
 
         elif(check_service_description == "InletHealth"):
             if error[2] == 'None':
-                health_status =jsonObj['fields']['Readings']
+                health_status =jsonObj['fields']['Reading']
                 return_code, output = return_output(health_status,check_service_description,error[2])
                 output = jsonObj
             else:
@@ -2321,7 +2321,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "BMCHealth"):
-            health_status =jsonObj['fields']['Readings']
+            health_status =jsonObj['fields']['Reading']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
@@ -2331,7 +2331,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "CPUHealth"):
-            health_status =jsonObj['fields']['Readings']
+            health_status =jsonObj['fields']['Reading']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
 
@@ -2342,7 +2342,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "MemHealth"):
-            health_status =jsonObj['fields']['Readings']
+            health_status =jsonObj['fields']['Reading']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
@@ -2367,7 +2367,7 @@ def nagios_external_agent(jsonObjList, error_list):
 
         elif(check_service_description == "CPUUsage"):
             #print ("\ncheck_service_description",check_service_description)
-            cpu_usage =jsonObj['fields']['Readings']
+            cpu_usage =jsonObj['fields']['Reading']
             #print ("\nHost:",host)
             # *** Missing the OK/Warning/Critical thresholds ***
             #return_code, output = return_output(health_status,check_service_description)
@@ -2382,7 +2382,7 @@ def nagios_external_agent(jsonObjList, error_list):
 
         elif(check_service_description == "NodePower"):
 
-            power_usage =jsonObj['fields']['Readings']
+            power_usage =jsonObj['fields']['Reading']
             output = jsonObj
             return_code=0
             # *** Applying OK/Warning/Critical thresholds ***
@@ -2407,7 +2407,7 @@ def nagios_external_agent(jsonObjList, error_list):
             # *** Missing the OK/Warning/Critical thresholds ***  
             # total_mem =jsonObj['fields']['total_memory']
             # avail_mem =jsonObj['fields']['available_memory']
-            mem_used =jsonObj['fields']['Readings']
+            mem_used =jsonObj['fields']['Reading']
             #output="Total Memory: "+str(total_mem)+" Used Memory: "+str(mem_used)+" Avaiable Memory: "+str(avail_mem)
             output = jsonObj
             return_code=0
