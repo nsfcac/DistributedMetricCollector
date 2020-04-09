@@ -2357,6 +2357,8 @@ def nagios_external_agent(jsonObjList, error_list):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
+            print ("\nNODEJ\n")
+
             if jsonObj:
                 output=jsonObj
             else:
@@ -2383,7 +2385,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "NodePower"):
-
+            print ("\nNODEP\n")
             power_usage =jsonObj['fields']['Reading']
             output = jsonObj
             return_code=0
