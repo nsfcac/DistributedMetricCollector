@@ -1871,7 +1871,7 @@ def launch (taskList,session,startTime,hostList):
     
        
     # PUSH DATA TO NAGIOS IN PASSIVE MODE
-    # nagios_external_agent(jsonObjList, error_list)
+    nagios_external_agent(jsonObjList, error_list)
     
     
     #TESTING START
@@ -2253,29 +2253,30 @@ def nagios_external_agent(jsonObjList, error_list):
     nagios_cmd = open("/usr/local/nagios/var/rw/nagios.cmd", "w")
     for jsonObj,error in zip(jsonObjList,error_list):
         #host =  jsonObj['tags']['host']
-        if jsonObj['tags'].get('host') != None:
-            host =  jsonObj['tags']['host']
+        if jsonObj['tags'].get('NodeId') != None:
+            host =  jsonObj['tags']['NodeId']
 
-        check_service_description = jsonObj['measurement']
+        check_service_description = jsonObj['tags']['Sensor']
         return_code = None
         output = ""
         timestamp = int(time.time())
 
-        if(check_service_description == "Node_Health"):
-            health_status =jsonObj['fields']['host_health_status']
+        if(check_service_description == "NodeHealth"):
+            health_status =jsonObj['fields']['Readings']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
                 output = error[2]
-
+                return_code = 3
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Node_Power_State"):
-            health_status =jsonObj['fields']['power_state']
+        elif(check_service_description == "PowerState"):
+            health_status =jsonObj['fields']['Readings']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
                 output = error[2]
+                return_code = 3
             
             nagios_cmd.write("[{timestamp}] PROCESS_HOST_CHECK_RESULT;{hostname};{return_code};{text}\n".format
                      (timestamp = timestamp,
@@ -2285,8 +2286,8 @@ def nagios_external_agent(jsonObjList, error_list):
             
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Node_LED_Indicator"):
-            indicator =jsonObj['fields']['led_indicator']
+        elif(check_service_description == "IndicatorLEDStatus"):
+            indicator =jsonObj['fields']['Readings']
             if indicator == "Lit":
                 return_code = 2
                 output = "Node Indicator LED status is Lit!"
@@ -2308,182 +2309,322 @@ def nagios_external_agent(jsonObjList, error_list):
                 return_code = 3
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Inlet_Health"):
+        elif(check_service_description == "InletHealth"):
             if error[2] == 'None':
-                health_status =jsonObj['fields']['inlet_health_status']
+                health_status =jsonObj['fields']['Readings']
                 return_code, output = return_output(health_status,check_service_description,error[2])
                 output = jsonObj
             else:
                 output = error[2]
                 return_code = 3
+
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "BMC_Health"):
-            health_status =jsonObj['fields']['bmc_health_status']
+        elif(check_service_description == "BMCHealth"):
+            health_status =jsonObj['fields']['Readings']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
+                return_code = 3
                 output = error[2]
+
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "CPU_Health"):
-            health_status =jsonObj['fields']['cpu_health_status']
+        elif(check_service_description == "CPUHealth"):
+            health_status =jsonObj['fields']['Readings']
+            return_code, output = return_output(health_status,check_service_description,error[2])
+            output = jsonObj
+
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "MemHealth"):
+            health_status =jsonObj['fields']['Readings']
             return_code, output = return_output(health_status,check_service_description,error[2])
             output = jsonObj
             if error[2] != 'None':
+                return_code = 3
                 output = error[2]
-            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Memory_Health"):
-            health_status =jsonObj['fields']['memory_health_status']
-            return_code, output = return_output(health_status,check_service_description,error[2])
-            output = jsonObj
-            if error[2] != 'None':
-                output = error[2]
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
-        elif(check_service_description == "system_metrics"):
+        elif(check_service_description == "NodeJobs"):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
-            output=jsonObj['fields']['jobID']
+            if jsonObj:
+                output=jsonObj
+            else:
+                output="Idle-No job running at the moment."
             return_code=0
             #if error[2] != 'None':
             #    return_code = 3
-            update_service (host,timestamp,"Job_Info",return_code,output,nagios_cmd )
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
 
-        elif(check_service_description == "CPU_Usage"):
+        elif(check_service_description == "CPUUsage"):
             #print ("\ncheck_service_description",check_service_description)
-            cpu_usage =jsonObj['fields']['cpuusage']
+            cpu_usage =jsonObj['fields']['Readings']
             #print ("\nHost:",host)
             # *** Missing the OK/Warning/Critical thresholds ***
             #return_code, output = return_output(health_status,check_service_description)
             output=jsonObj
             return_code=0
+
             if error[2] != 'None':
-                return_code = 3            
-            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
-
-        elif(check_service_description == "Node_Power_Usage"):
-
-            power_usage =jsonObj['fields']['powerusage_watts']
-            output = jsonObj
-
-            # *** Applying OK/Warning/Critical thresholds ***
-            if power_usage != None:
-
-                if power_usage <= jsonObj['fields']['PowerRequestedWatts']:
-                    return_code=0
-                elif power_usage > jsonObj['fields']['PowerRequestedWatts'] and power_usage <= jsonObj['fields']['PowerCapacityWatts']:
-                    return_code=1
-                elif power_usage > jsonObj['fields']['PowerCapacityWatts']:
-                    return_code=2
-            else:
                 return_code = 3
-            
+                output = error[2]
+
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Memory_Usage"):
+        elif(check_service_description == "NodePower"):
+
+            power_usage =jsonObj['fields']['Readings']
+            output = jsonObj
+            return_code=0
+            # *** Applying OK/Warning/Critical thresholds ***
+            # if power_usage != None:
+
+            #     if power_usage <= jsonObj['fields']['PowerRequestedWatts']:
+            #         return_code=0
+            #     elif power_usage > jsonObj['fields']['PowerRequestedWatts'] and power_usage <= jsonObj['fields']['PowerCapacityWatts']:
+            #         return_code=1
+            #     elif power_usage > jsonObj['fields']['PowerCapacityWatts']:
+            #         return_code=2
+            # else:
+            #     return_code = 3
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "MemUsage"):
             #print ("\ncheck_service_description",check_service_description)
             # *** Missing the OK/Warning/Critical thresholds ***  
-            total_mem =jsonObj['fields']['total_memory']
-            avail_mem =jsonObj['fields']['available_memory']
-            mem_used =jsonObj['fields']['memoryusage']
+            # total_mem =jsonObj['fields']['total_memory']
+            # avail_mem =jsonObj['fields']['available_memory']
+            mem_used =jsonObj['fields']['Readings']
             #output="Total Memory: "+str(total_mem)+" Used Memory: "+str(mem_used)+" Avaiable Memory: "+str(avail_mem)
             output = jsonObj
             return_code=0
             #return_code, output = return_output(health_status,check_service_description)
             if error[2] != 'None':
                 return_code = 3
+                output = error[2]
+
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
-        elif(check_service_description == "CPU_Temperature"):
+        elif(check_service_description == "CPU1Temp"):
 
             # *** Applying the OK/Warning/Critical thresholds ***
-            status_codes=[]
+            return_code=0
             output =jsonObj                                                                                                                                                          
-            if error[2] == 'None' and jsonObj['fields']['cpuLowerThresholdNonCritical'] != None and jsonObj['fields']['cpuUpperThresholdNonCritical'] != None and jsonObj['fields']['cpuLowerThresholdCritical'] != None and jsonObj['fields']['cpuUpperThresholdCritical'] != None:
-                if 'CPU1 Temp' in jsonObj['fields']:
-                    if jsonObj['fields']['CPU1 Temp'] >= jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU1 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical']:
-                        status_codes.append(0)
-                    elif jsonObj['fields']['CPU1 Temp'] > jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU1 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical'] or jsonObj['fields']['CPU1 Temp'] >= jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU1 Temp'] < jsonObj['fields']['cpuLowerThresholdNonCritical']:
-                        status_codes.append(1)
-                    elif jsonObj['fields']['CPU1 Temp'] < jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU1 Temp'] > jsonObj['fields']['cpuUpperThresholdCritical']:
-                        status_codes.append(2)
-                else:
-                    status_codes.append(3)
-                if 'CPU2 Temp' in jsonObj['fields']:
-                    if jsonObj['fields']['CPU2 Temp'] >= jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU2 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical']:
-                        status_codes.append(0)
-                    elif jsonObj['fields']['CPU2 Temp'] > jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU2 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical'] or jsonObj['fields']['CPU2 Temp'] >= jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU2 Temp'] < jsonObj['fields']['cpuLowerThresholdNonCritical']:
-                        status_codes.append(1)
-                    elif jsonObj['fields']['CPU2 Temp'] < jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU2 Temp'] > jsonObj['fields']['cpuUpperThresholdCritical']:
-                        status_codes.append(2)
-                else:
-                    status_codes.append(3)
-            else:
-                status_codes.append(3)
-
-    
-            update_service (host,timestamp,check_service_description,max(status_codes),output,nagios_cmd )
-
-        elif(check_service_description == "Inlet_Temperature"):
-
-        # *** Applying the OK/Warning/Critical thresholds ***                                                                                                                              
-            output =jsonObj
-            if error[2] == 'None' and jsonObj['fields']['inletLowerThresholdNonCritical'] != None and jsonObj['fields']['inletUpperThresholdNonCritical'] != None and jsonObj['fields']['inletUpperThresholdCritical'] != None:
-                if jsonObj['fields']['Inlet Temp'] >= jsonObj['fields']['inletLowerThresholdNonCritical'] and jsonObj['fields']['Inlet Temp'] <= jsonObj['fields']['inletUpperThresholdNonCritical']:
-                    return_code=0
-                elif jsonObj['fields']['Inlet Temp'] > jsonObj['fields']['inletUpperThresholdNonCritical'] and jsonObj['fields']['Inlet Temp'] <= jsonObj['fields']['inletUpperThresholdCritical']:
-                    return_code=1
-                elif jsonObj['fields']['Inlet Temp'] < jsonObj['fields']['inletLowerThresholdNonCritical'] or jsonObj['fields']['Inlet Temp'] > jsonObj['fields']['inletUpperThresholdCritical']:
-                    return_code=2
-                    
-
-            else:
+            # if error[2] == 'None' and jsonObj['fields']['cpuLowerThresholdNonCritical'] != None and jsonObj['fields']['cpuUpperThresholdNonCritical'] != None and jsonObj['fields']['cpuLowerThresholdCritical'] != None and jsonObj['fields']['cpuUpperThresholdCritical'] != None:
+            #     if 'CPU1 Temp' in jsonObj['fields']:
+            #         if jsonObj['fields']['CPU1 Temp'] >= jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU1 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical']:
+            #             status_codes.append(0)
+            #         elif jsonObj['fields']['CPU1 Temp'] > jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU1 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical'] or jsonObj['fields']['CPU1 Temp'] >= jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU1 Temp'] < jsonObj['fields']['cpuLowerThresholdNonCritical']:
+            #             status_codes.append(1)
+            #         elif jsonObj['fields']['CPU1 Temp'] < jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU1 Temp'] > jsonObj['fields']['cpuUpperThresholdCritical']:
+            #             status_codes.append(2)
+            #     else:
+            #         status_codes.append(3)
+            #     if 'CPU2 Temp' in jsonObj['fields']:
+            #         if jsonObj['fields']['CPU2 Temp'] >= jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU2 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical']:
+            #             status_codes.append(0)
+            #         elif jsonObj['fields']['CPU2 Temp'] > jsonObj['fields']['cpuLowerThresholdNonCritical'] and jsonObj['fields']['CPU2 Temp'] <= jsonObj['fields']['cpuUpperThresholdNonCritical'] or jsonObj['fields']['CPU2 Temp'] >= jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU2 Temp'] < jsonObj['fields']['cpuLowerThresholdNonCritical']:
+            #             status_codes.append(1)
+            #         elif jsonObj['fields']['CPU2 Temp'] < jsonObj['fields']['cpuLowerThresholdCritical'] and jsonObj['fields']['CPU2 Temp'] > jsonObj['fields']['cpuUpperThresholdCritical']:
+            #             status_codes.append(2)
+            #     else:
+            #         status_codes.append(3)
+            # else:
+            #     status_codes.append(3)
+            if error[2] != 'None':
                 return_code = 3
-
+                output = error[2]
+    
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
-        elif(check_service_description == "Fan_Speed"):
-            
-            status_codes=[]
-            # *** Apply OK/Warning/Critical thresholds ***
-            if error[2] == 'None' and 'FAN_1' in jsonObj['fields']:
-                if jsonObj['fields']['FAN_1'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_1'] < jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(0)
-                elif jsonObj['fields']['FAN_1'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_1'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(2)
+        elif(check_service_description == "CPU2Temp"):
 
-                if jsonObj['fields']['FAN_2'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_2'] < jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(0)
-                elif jsonObj['fields']['FAN_2'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_2'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(2)
-
-                if jsonObj['fields']['FAN_3'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_3'] < jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(0)
-                elif jsonObj['fields']['FAN_3'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_3'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(2)
-
-                if jsonObj['fields']['FAN_4'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_4'] < jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(0)
-                elif jsonObj['fields']['FAN_4'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_4'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
-                    status_codes.append(2)
-            else:
-                status_codes.append(3)
-
-            output =jsonObj
-            update_service (host,timestamp,check_service_description,max(status_codes),output,nagios_cmd )
-        
-        elif(check_service_description == "Fan_Health"):
-            
-            # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
+            # *** Applying the OK/Warning/Critical thresholds ***
             return_code=0
+            output =jsonObj                                                                                                                                                          
             
             if error[2] != 'None':
                 return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "InletTemp"):
+
+        # *** Applying the OK/Warning/Critical thresholds ***                                                                                                                              
+            output =jsonObj
+            # if error[2] == 'None' and jsonObj['fields']['inletLowerThresholdNonCritical'] != None and jsonObj['fields']['inletUpperThresholdNonCritical'] != None and jsonObj['fields']['inletUpperThresholdCritical'] != None:
+            #     if jsonObj['fields']['Inlet Temp'] >= jsonObj['fields']['inletLowerThresholdNonCritical'] and jsonObj['fields']['Inlet Temp'] <= jsonObj['fields']['inletUpperThresholdNonCritical']:
+            #         return_code=0
+            #     elif jsonObj['fields']['Inlet Temp'] > jsonObj['fields']['inletUpperThresholdNonCritical'] and jsonObj['fields']['Inlet Temp'] <= jsonObj['fields']['inletUpperThresholdCritical']:
+            #         return_code=1
+            #     elif jsonObj['fields']['Inlet Temp'] < jsonObj['fields']['inletLowerThresholdNonCritical'] or jsonObj['fields']['Inlet Temp'] > jsonObj['fields']['inletUpperThresholdCritical']:
+            #         return_code=2
+                    
+
+            # else:
+            #     return_code = 3
+
+            return_code = 0
+
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_1Speed"):
+            
+            # status_codes=[]
+            # # *** Apply OK/Warning/Critical thresholds ***
+            # if error[2] == 'None' and 'FAN_1' in jsonObj['fields']:
+            #     if jsonObj['fields']['FAN_1'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_1'] < jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(0)
+            #     elif jsonObj['fields']['FAN_1'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_1'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(2)
+
+            #     if jsonObj['fields']['FAN_2'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_2'] < jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(0)
+            #     elif jsonObj['fields']['FAN_2'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_2'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(2)
+
+            #     if jsonObj['fields']['FAN_3'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_3'] < jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(0)
+            #     elif jsonObj['fields']['FAN_3'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_3'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(2)
+
+            #     if jsonObj['fields']['FAN_4'] > jsonObj['fields']['fanLowerThresholdCritical'] and jsonObj['fields']['FAN_4'] < jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(0)
+            #     elif jsonObj['fields']['FAN_4'] <= jsonObj['fields']['fanLowerThresholdCritical'] or jsonObj['fields']['FAN_4'] >=  jsonObj['fields']['fanUpperThresholdCritical']:
+            #         status_codes.append(2)
+            # else:
+            #     status_codes.append(3)
+
+            output =jsonObj
+            return_code = 0
+
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+        
+        elif(check_service_description == "FAN_2Speed"):
+            
+            output =jsonObj
+            return_code = 0
+
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_3Speed"):
+            
+            output =jsonObj
+            return_code = 0
+
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_4Speed"):
+            
+            output =jsonObj
+            return_code = 0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_1Health"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_2Health"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+                    
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "FAN_3Health"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+                    
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+        
+        elif(check_service_description == "FAN_4Health"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = error[2]
+                    
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+            
+        elif(check_service_description == "MemPowerUsage"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = "Plugin Not Installed!"
+                    
+            update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
+
+        elif(check_service_description == "CPUPowerUsage"):
+                
+                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
+            output =jsonObj
+            return_code=0
+                
+            if error[2] != 'None':
+                return_code = 3
+                output = "Plugin Not Installed!"
+                    
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
     nagios_cmd.close()
@@ -2501,7 +2642,7 @@ def update_service (host,timestamp,check_service_description,return_code,output,
             
 def return_output (health_status,service_description,error):
     
-    if(service_description == "Inlet_Health"):
+    if(service_description == "InletHealth"):
 
         if(health_status == "OK"):
             return 0,"OK - Inlet sensor health is OK!"
@@ -2513,7 +2654,7 @@ def return_output (health_status,service_description,error):
             return 2, "CRITICAL - Inlet sensor needs immediate attention!"
         return 3, None
 
-    elif(service_description == "Node_Health"):
+    elif(service_description == "NodeHealth"):
         if(health_status == "OK"):
             return 0,"OK - Node health is OK!"
             
@@ -2524,7 +2665,7 @@ def return_output (health_status,service_description,error):
             return 2, "CRITICAL - Node needs immediate attention!"
         return 3, None
 
-    elif(service_description == "BMC_Health"):
+    elif(service_description == "BMCHealth"):
         if(health_status == "OK"):
             return 0,"OK - BMC health is OK!"
 
@@ -2535,7 +2676,7 @@ def return_output (health_status,service_description,error):
                 return 2, "CRITICAL - BMC needs immediate attention!"
         return 3, None
 
-    elif(service_description == "CPU_Health"):
+    elif(service_description == "CPUHealth"):
             
         if(health_status == "OK"):
             return 0,"OK - CPU health is OK!"
@@ -2547,7 +2688,7 @@ def return_output (health_status,service_description,error):
                 return 2, "CRITICAL - CPU needs immediate attention!"
         return 3, None
 
-    elif(service_description == "Memory_Health"):
+    elif(service_description == "MemoryHealth"):
         if(health_status == "OK"):
             return 0,"OK - Memory health is OK!"
 
@@ -2558,7 +2699,7 @@ def return_output (health_status,service_description,error):
                 return 2, "CRITICAL - Memory needs immediate attention!"
         return 3, None
     
-    elif(service_description == "Node_Power_State"):
+    elif(service_description == "PowerState"):
         if error != 'None':
             return 2,None
         else:
