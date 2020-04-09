@@ -2253,11 +2253,13 @@ def log_job_response(jsonObjList,log_prefix,error_list,check):
 
 
 def nagios_external_agent(jsonObjList, error_list):
+    print ("Total members:",len(jsonObj))
+    inc = 0
     nagios_cmd = open("/usr/local/nagios/var/rw/nagios.cmd", "w")
     for jsonObj,error in zip(jsonObjList,error_list):
         #host =  jsonObj['tags']['host']
+        inc += 1
         
-        print (jsonObj)
 
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
@@ -2665,7 +2667,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
     nagios_cmd.close()
-
+    print ("Total inc:",inc)
 def update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd):
     nagios_cmd.write("[{timestamp}] PROCESS_SERVICE_CHECK_RESULT;{hostname};{service};{return_code};{text}\n".format
                      (timestamp = timestamp,
