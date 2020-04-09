@@ -266,11 +266,8 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         #pwr_thresholds.update ({'PowerMetrics':data['PowerControl'][0][u'PowerMetrics']})
         #pwr_thresholds.update ({'PowerLimit':data['PowerControl'][0][u'PowerLimit']})
         #pwr_thresholds.update ({'PowerAllocatedWatts':data['PowerControl'][0][u'PowerAllocatedWatts']})
-        if 'PowerControl' in data:
-            if  data[u'PowerControl'][0].get(u'PowerConsumedWatts') != None:
-                return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
-            else:
-                return None, None, str(None)
+        if u'PowerConsumedWatts' in data[u'PowerControl'][0]:    
+            return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
         else:
             return None, None, str(None)
 
