@@ -2382,7 +2382,7 @@ def nagios_external_agent(jsonObjList, error_list):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
-            
+            print("\HOSTJ",host)
             output = jsonObj
             return_code=0
             #if error[2] != 'None':
@@ -2407,7 +2407,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "NodePower"):
-            
+            print("\HOSTP",host)
             #power_usage =jsonObj['fields']['Reading']
             
             # *** Applying OK/Warning/Critical thresholds ***
@@ -2638,7 +2638,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
             
         elif(check_service_description == "MemPowerUsage"):
-                
+             print("\HOSTMEMP",host)   
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
             output =jsonObj
             return_code=0
@@ -2650,7 +2650,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "CPUPowerUsage"):
-                
+             print("\HOSTCPUP",host)
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
             output =jsonObj
             return_code=0
