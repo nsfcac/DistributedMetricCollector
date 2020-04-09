@@ -1879,7 +1879,7 @@ def launch (taskList,session,startTime,hostList):
     
     #TESTING START
         
-    print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(jsonObjList),"is: "," %s Seconds " % round((time.time() - startTime),2))
+    print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(objList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
     return    
         #Power Usage by nodes across cluster:
