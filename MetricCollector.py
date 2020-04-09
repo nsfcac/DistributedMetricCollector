@@ -2638,7 +2638,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
             
         elif(check_service_description == "MemPowerUsage"):
-             print("\HOSTMEMP",host)   
+            print("\HOSTMEMP",host)   
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
             output =jsonObj
             return_code=0
@@ -2650,7 +2650,7 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "CPUPowerUsage"):
-             print("\HOSTCPUP",host)
+            print("\HOSTCPUP",host)
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
             output =jsonObj
             return_code=0
