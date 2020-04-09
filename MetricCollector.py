@@ -1800,7 +1800,7 @@ def main():
             taskList.append([hostList,check])
             continue
         elif check == 'MEMPWR' or check == 'CPUPWR':
-            hlist = ['10.100.10.25']
+            hlist = ['10.100.10.25','10.100.10.26','10.100.10.27','10.100.10.28']
             for h in hlist:
                 taskList.append([h,check])        
             continue
@@ -2262,6 +2262,7 @@ def nagios_external_agent(jsonObjList, error_list):
         return_code = None
         output = ""
         timestamp = int(time.time())
+
 
         if(check_service_description == "NodeHealth"):
             health_status =jsonObj['fields']['Reading']
