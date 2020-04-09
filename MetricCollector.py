@@ -2688,7 +2688,7 @@ def return_output (health_status,service_description,error):
                 return 2, "CRITICAL - CPU needs immediate attention!"
         return 3, None
 
-    elif(service_description == "MemoryHealth"):
+    elif(service_description == "MemHealth"):
         if(health_status == "OK"):
             return 0,"OK - Memory health is OK!"
 
