@@ -2270,15 +2270,16 @@ def nagios_external_agent(jsonObjList, error_list):
                 output = error[2]
                 return_code = 3
             else:
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                if jsonObj['fields'].get('Reading') != None:
+                    health_status =jsonObj['fields']['Reading']
+                    return_code, output = return_output(health_status,check_service_description,error[2])
+                    output = jsonObj
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "PowerState"):
             
-            if jsonObj['tags'].get('NodeId') != None:
+            if jsonObj['fields'].get('Reading') != None:
                 health_status =jsonObj['fields']['Reading']
                 return_code, output = return_output(health_status,check_service_description,error[2])
                 output = jsonObj              
@@ -2301,33 +2302,34 @@ def nagios_external_agent(jsonObjList, error_list):
                 output = error[2]
                 return_code = 3
             else:
-            
-                indicator =jsonObj['fields']['Reading']
-                
-                if indicator == "Lit":
-                    return_code = 2
-                    output = "Node Indicator LED status is Lit!"
+                if jsonObj['fields'].get('Reading') != None:
+                    indicator =jsonObj['fields']['Reading']
+                    
+                    if indicator == "Lit":
+                        return_code = 2
+                        output = "Node Indicator LED status is Lit!"
 
-                elif indicator == "Blinking":
-                    return_code = 1
-                    output = "Node Indicator LED status is Blinking!"
-                
-                elif indicator == "Off":
-                    return_code = 0
-                    output = "Node Indicator LED status is Off!"
+                    elif indicator == "Blinking":
+                        return_code = 1
+                        output = "Node Indicator LED status is Blinking!"
+                    
+                    elif indicator == "Off":
+                        return_code = 0
+                        output = "Node Indicator LED status is Off!"
 
-                elif indicator == "Unknown":
-                    return_code = 3
-                    output = "Node Indicator LED status is unknown!"
-                output = jsonObj
+                    elif indicator == "Unknown":
+                        return_code = 3
+                        output = "Node Indicator LED status is unknown!"
+                    output = jsonObj
             
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "InletHealth"):
             if error[2] == 'None':
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                if jsonObj['fields'].get('Reading') != None:
+                    health_status =jsonObj['fields']['Reading']
+                    return_code, output = return_output(health_status,check_service_description,error[2])
+                    output = jsonObj
             else:
                 output = error[2]
                 return_code = 3
@@ -2340,9 +2342,10 @@ def nagios_external_agent(jsonObjList, error_list):
                 return_code = 3
                 output = error[2]
             else:
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                if jsonObj['fields'].get('Reading') != None:
+                    health_status =jsonObj['fields']['Reading']
+                    return_code, output = return_output(health_status,check_service_description,error[2])
+                    output = jsonObj
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2352,9 +2355,10 @@ def nagios_external_agent(jsonObjList, error_list):
                 return_code = 3
                 output = error[2]
             else:
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                if jsonObj['fields'].get('Reading') != None:
+                    health_status =jsonObj['fields']['Reading']
+                    return_code, output = return_output(health_status,check_service_description,error[2])
+                    output = jsonObj
             
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2364,9 +2368,10 @@ def nagios_external_agent(jsonObjList, error_list):
                 return_code = 3
                 output = error[2]
             else:
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                if jsonObj['fields'].get('Reading') != None:
+                    health_status =jsonObj['fields']['Reading']
+                    return_code, output = return_output(health_status,check_service_description,error[2])
+                    output = jsonObj
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
