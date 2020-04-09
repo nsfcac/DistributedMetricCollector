@@ -274,7 +274,7 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
                     return None, None, str(None)
         except:
             print("\nOUT OF RANGE:",data)
-
+            return None, None, str(None)
     except requests.exceptions.RequestException as e:
         return None,None, str(e)
 
