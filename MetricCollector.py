@@ -2253,7 +2253,7 @@ def log_job_response(jsonObjList,log_prefix,error_list,check):
 
 
 def nagios_external_agent(jsonObjList, error_list):
-    print ("Total members:",len(jsonObj))
+    print ("Total members:",len(jsonObjList))
     inc = 0
     nagios_cmd = open("/usr/local/nagios/var/rw/nagios.cmd", "w")
     for jsonObj,error in zip(jsonObjList,error_list):
