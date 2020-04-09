@@ -2258,7 +2258,7 @@ def nagios_external_agent(jsonObjList, error_list):
 
         if jsonObj['tags'].get('Sensor') != None:
             check_service_description = jsonObj['tags']['Sensor']
-            
+
         return_code = None
         output = ""
         timestamp = int(time.time())
@@ -2409,7 +2409,7 @@ def nagios_external_agent(jsonObjList, error_list):
             # *** Missing the OK/Warning/Critical thresholds ***  
             # total_mem =jsonObj['fields']['total_memory']
             # avail_mem =jsonObj['fields']['available_memory']
-            mem_used =jsonObj['fields']['Reading']
+            #mem_used =jsonObj['fields']['Reading']
             #output="Total Memory: "+str(total_mem)+" Used Memory: "+str(mem_used)+" Avaiable Memory: "+str(avail_mem)
             output = jsonObj
             return_code=0
