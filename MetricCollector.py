@@ -2277,13 +2277,14 @@ def nagios_external_agent(jsonObjList, error_list):
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "PowerState"):
-            if error[2] != 'None':
-                output = error[2]
-                return_code = 3
-            else:
+            
+            if jsonObj['tags'].get('NodeId') != None:
                 health_status =jsonObj['fields']['Reading']
                 return_code, output = return_output(health_status,check_service_description,error[2])
-                output = jsonObj
+                output = jsonObj              
+            else:
+                output = error[2]
+                return_code = 3
             
             
             nagios_cmd.write("[{timestamp}] PROCESS_HOST_CHECK_RESULT;{hostname};{return_code};{text}\n".format
