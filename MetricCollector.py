@@ -1844,19 +1844,19 @@ def launch (taskList,session,startTime,hostList):
     #print (objList)
     #print("\nstart cluster metric\n") 
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
-    for obj in objList:
-    #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
-        print (obj)
-        print("\n")
+    # for obj in objList:
+    # #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+    #     print (obj)
+    #     print("\n")
 
-    for err in error_list:
-    #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
-        print (err)
-        print("\n")
+    # for err in error_list:
+    # #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+    #     print (err)
+    #     print("\n")
     
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
-    jsonObjList = objList
+    #jsonObjList = objList
     # print ("\n\nMetrics:",objList)
          
         
@@ -1874,7 +1874,7 @@ def launch (taskList,session,startTime,hostList):
     
        
     # PUSH DATA TO NAGIOS IN PASSIVE MODE
-    nagios_external_agent(jsonObjList, error_list)
+    nagios_external_agent(objList, error_list)
     
     
     #TESTING START
@@ -2256,6 +2256,9 @@ def nagios_external_agent(jsonObjList, error_list):
     nagios_cmd = open("/usr/local/nagios/var/rw/nagios.cmd", "w")
     for jsonObj,error in zip(jsonObjList,error_list):
         #host =  jsonObj['tags']['host']
+        
+        print (jsonObj)
+
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
 
