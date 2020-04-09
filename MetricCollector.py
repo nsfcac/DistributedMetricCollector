@@ -2256,7 +2256,9 @@ def nagios_external_agent(jsonObjList, error_list):
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
 
-        check_service_description = jsonObj['tags']['Sensor']
+        if jsonObj['tags'].get('Sensor') != None:
+            check_service_description = jsonObj['tags']['Sensor']
+            
         return_code = None
         output = ""
         timestamp = int(time.time())
