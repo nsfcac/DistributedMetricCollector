@@ -318,7 +318,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
     conn_time_out=30
     read_time_out=50
 
-    global prevMetrics
+    # global prevMetrics
     
 
     # Fetch the monitoring data based on check type                                                                                                               
@@ -351,21 +351,21 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
             host = host.replace('100','101')
 
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'CPUPowerUsage'):
-                if (round (prevMetrics[host+'-'+'CPUPowerUsage']) != round (cpu_cur_pwr_usage)):
-                    prevMetrics[host+'-'+'CPUPowerUsage'] = cpu_cur_pwr_usage
-                    mon_data_dict = build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
-                    # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                    json_node_list.append(mon_data_dict)
-                    # error ('None' in this case) with host and checktype is appended to global error list
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'CPUPowerUsage'] = cpu_cur_pwr_usage
-                mon_data_dict = build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
-                # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                json_node_list.append(mon_data_dict)
-                # error ('None' in this case) with host and checktype is appended to global error list
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'CPUPowerUsage'):
+            #     if (round (prevMetrics[host+'-'+'CPUPowerUsage']) != round (cpu_cur_pwr_usage)):
+            #         prevMetrics[host+'-'+'CPUPowerUsage'] = cpu_cur_pwr_usage
+            #         mon_data_dict = build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
+            #         # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            #         json_node_list.append(mon_data_dict)
+            #         # error ('None' in this case) with host and checktype is appended to global error list
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'CPUPowerUsage'] = cpu_cur_pwr_usage
+            mon_data_dict = build_cpupower_usage_metric(metricTimeStamp,cpu_cur_pwr_usage,cpu_max_pwr_usage,cpu_min_pwr_usage,cpu_avg_pwr_usage,tot_time,host,error)
+            # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            json_node_list.append(mon_data_dict)
+            # error ('None' in this case) with host and checktype is appended to global error list
+            error_list.append([host, checkType, error])
 
     ###############################################################################################                                                                                                           
     # Process MEMORY POWER check type                                                                                                                                                                           
@@ -393,22 +393,22 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         if error == 'None':
             host = host.replace('100','101')
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'MemPowerUsage'):
-                if (round (prevMetrics[host+'-'+'MemPowerUsage']) != round (mem_cur_pwr_usage)):
-                    prevMetrics[host+'-'+'MemPowerUsage'] = mem_cur_pwr_usage
-                    mon_data_dict = build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
-                    # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                    json_node_list.append(mon_data_dict)
-                    # error ('None' in this case) with host and checktype is appended to global error list
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'MemPowerUsage'] = mem_cur_pwr_usage
-                # power usage metric is built and result is returned into a dictionary
-                mon_data_dict = build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
-                # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                json_node_list.append(mon_data_dict)
-                # error ('None' in this case) with host and checktype is appended to global error list
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'MemPowerUsage'):
+            #     if (round (prevMetrics[host+'-'+'MemPowerUsage']) != round (mem_cur_pwr_usage)):
+            #         prevMetrics[host+'-'+'MemPowerUsage'] = mem_cur_pwr_usage
+            #         mon_data_dict = build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
+            #         # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            #         json_node_list.append(mon_data_dict)
+            #         # error ('None' in this case) with host and checktype is appended to global error list
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'MemPowerUsage'] = mem_cur_pwr_usage
+            # power usage metric is built and result is returned into a dictionary
+            mon_data_dict = build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_usage,mem_min_pwr_usage,mem_avg_pwr_usage,tot_time,host,error)
+            # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+            json_node_list.append(mon_data_dict)
+            # error ('None' in this case) with host and checktype is appended to global error list
+            error_list.append([host, checkType, error])
 
     ###############################################################################################                                                                                                           
     # Process "Power" check type                                                                                                                                                                           
@@ -436,21 +436,21 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
             # power usage metric is built and result is returned into a dictionary
             if power_usage != None:
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'NodePower'):
-                    if (round (prevMetrics[host+'-'+'NodePower']) != round (power_usage)):
-                        prevMetrics[host+'-'+'NodePower'] = power_usage
-                        mon_data_dict = build_power_usage_metric(metricTimeStamp,power_usage,host)
-                        # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                        json_node_list.append(mon_data_dict)
-                        # error ('None' in this case) with host and checktype is appended to global error list
-                        error_list.append([host, checkType, error])
-                else:
-                    prevMetrics[host+'-'+'NodePower'] = power_usage
-                    mon_data_dict = build_power_usage_metric(metricTimeStamp,power_usage,host)
-                    # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
-                    json_node_list.append(mon_data_dict)
-                    # error ('None' in this case) with host and checktype is appended to global error list
-                    error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'NodePower'):
+                #     if (round (prevMetrics[host+'-'+'NodePower']) != round (power_usage)):
+                #         prevMetrics[host+'-'+'NodePower'] = power_usage
+                #         mon_data_dict = build_power_usage_metric(metricTimeStamp,power_usage,host)
+                #         # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+                #         json_node_list.append(mon_data_dict)
+                #         # error ('None' in this case) with host and checktype is appended to global error list
+                #         error_list.append([host, checkType, error])
+                # else:
+                #     prevMetrics[host+'-'+'NodePower'] = power_usage
+                mon_data_dict = build_power_usage_metric(metricTimeStamp,power_usage,host)
+                # monitored data (in dictionary) is appended into global list passed by core_to_threads ()
+                json_node_list.append(mon_data_dict)
+                # error ('None' in this case) with host and checktype is appended to global error list
+                error_list.append([host, checkType, error])
         # else:
         #     # First retry
         #     retry += 1
@@ -520,93 +520,93 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 cpuvals = cpu_temperature.values()
 
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'CPU1Temp'):
-                    for (k,v) in zip(cpukeys, cpuvals):
-                        if (round (prevMetrics[host+'-'+k]) != round (v)):
-                            prevMetrics[host+'-'+k] = v
-                            mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
-                            json_node_list.append(mon_data_dict)
-                            error_list.append([host, checkType, error])
-                else:
-                    for (k,v) in zip(cpukeys, cpuvals):
-                        prevMetrics[host+'-'+k] = v
-                        mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
-                        json_node_list.append(mon_data_dict)
-                        error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'CPU1Temp'):
+                #     for (k,v) in zip(cpukeys, cpuvals):
+                #         if (round (prevMetrics[host+'-'+k]) != round (v)):
+                #             prevMetrics[host+'-'+k] = v
+                #             mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
+                #             json_node_list.append(mon_data_dict)
+                #             error_list.append([host, checkType, error])
+                # else:
+                for (k,v) in zip(cpukeys, cpuvals):
+                        # prevMetrics[host+'-'+k] = v
+                    mon_data_dict = build_cpu_temperature_metric(metricTimeStamp,k, v, host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
 
             if inlet_temp != None:
                 cpukeys = inlet_temp.keys()
                 cpuvals = inlet_temp.values()
                 
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'InletTemp'):
-                    for (k,v) in zip (cpukeys,cpuvals):
-                        if v != None:
-                            if (round (prevMetrics[host+'-'+k]) != round (v)):
-                                prevMetrics[host+'-'+k] = v    
-                                mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
-                                json_node_list.append(mon_data_dict)
-                                error_list.append([host, checkType, error])
-                else:
-                    for (k,v) in zip (cpukeys,cpuvals):
-                        if v != None:
-                            prevMetrics[host+'-'+k] = v
-                            prevMetrics[host+'-'+k] = v    
-                            mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
-                            json_node_list.append(mon_data_dict)
-                            error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'InletTemp'):
+                #     for (k,v) in zip (cpukeys,cpuvals):
+                #         if v != None:
+                #             if (round (prevMetrics[host+'-'+k]) != round (v)):
+                #                 prevMetrics[host+'-'+k] = v    
+                #                 mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
+                #                 json_node_list.append(mon_data_dict)
+                #                 error_list.append([host, checkType, error])
+                # else:
+                for (k,v) in zip (cpukeys,cpuvals):
+                    if v != None:
+                            # prevMetrics[host+'-'+k] = v
+                            # prevMetrics[host+'-'+k] = v    
+                        mon_data_dict = build_inlet_temperature_metric(metricTimeStamp,k,v, host)
+                        json_node_list.append(mon_data_dict)
+                        error_list.append([host, checkType, error])
             
             if fan_speed != None:
                 fankeys = fan_speed.keys()
                 fanvals = fan_speed.values()
                 
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'FAN_1Speed'):
-                    for k,v in zip(fankeys,fanvals):
-                        if (round (prevMetrics[host+'-'+k]) != round (v)):
-                            prevMetrics[host+'-'+k] = v
-                            mon_data_dict = build_fanspeed_metric(metricTimeStamp,k,v,host)
-                            json_node_list.append(mon_data_dict)
-                            error_list.append([host, checkType, error])
-                else:
-                    for k,v in zip(fankeys,fanvals):
-                        prevMetrics[host+'-'+k] = v
-                        mon_data_dict = build_fanspeed_metric(metricTimeStamp,k,v,host)
-                        json_node_list.append(mon_data_dict)
-                        error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'FAN_1Speed'):
+                #     for k,v in zip(fankeys,fanvals):
+                #         if (round (prevMetrics[host+'-'+k]) != round (v)):
+                #             prevMetrics[host+'-'+k] = v
+                #             mon_data_dict = build_fanspeed_metric(metricTimeStamp,k,v,host)
+                #             json_node_list.append(mon_data_dict)
+                #             error_list.append([host, checkType, error])
+                # else:
+                for k,v in zip(fankeys,fanvals):
+                        # prevMetrics[host+'-'+k] = v
+                    mon_data_dict = build_fanspeed_metric(metricTimeStamp,k,v,host)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
 
             if inlet_health != None:
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'InletHealth'):
-                    if (prevMetrics[host+'-'+'InletHealth'] != inlet_health):
-                        prevMetrics[host+'-'+'InletHealth'] = inlet_health
-                        mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
-                        json_node_list.append(mon_data_dict)
-                        error_list.append([host, checkType, error])
-                else:
-                    prevMetrics[host+'-'+'InletHealth'] = inlet_health
-                    mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'InletHealth'):
+                #     if (prevMetrics[host+'-'+'InletHealth'] != inlet_health):
+                #         prevMetrics[host+'-'+'InletHealth'] = inlet_health
+                #         mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
+                #         json_node_list.append(mon_data_dict)
+                #         error_list.append([host, checkType, error])
+                # else:
+                #     prevMetrics[host+'-'+'InletHealth'] = inlet_health
+                mon_data_dict = build_inlethealth_metric(metricTimeStamp,inlet_health,tot_time,host,retry,error)
+                json_node_list.append(mon_data_dict)
+                error_list.append([host, checkType, error])
 
             if fan_health != None:
                 fankeys = fan_health.keys()
                 fanvals = fan_health.values()
                 
                 # if bool (prevMetrics):
-                if prevMetrics.get(host+'-'+'FAN_1Health'):
-                    for k,v in zip(fankeys,fanvals):               
-                        if (prevMetrics[host+'-'+k] != v):
-                            prevMetrics[host+'-'+k] = v
-                            mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
-                            json_node_list.append(mon_data_dict)
-                            error_list.append([host, checkType, error])
-                else:
-                    for k,v in zip(fankeys,fanvals):               
-                        prevMetrics[host+'-'+k] = v
-                        mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
-                        json_node_list.append(mon_data_dict)
-                        error_list.append([host, checkType, error])
+                # if prevMetrics.get(host+'-'+'FAN_1Health'):
+                #     for k,v in zip(fankeys,fanvals):               
+                #         if (prevMetrics[host+'-'+k] != v):
+                #             prevMetrics[host+'-'+k] = v
+                #             mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
+                #             json_node_list.append(mon_data_dict)
+                #             error_list.append([host, checkType, error])
+                # else:
+                for k,v in zip(fankeys,fanvals):               
+                        # prevMetrics[host+'-'+k] = v
+                    mon_data_dict = build_fanhealth_metric(metricTimeStamp,k,v,tot_time,host,retry,error)
+                    json_node_list.append(mon_data_dict)
+                    error_list.append([host, checkType, error])
         # else:
         #     retry += 1
         #     #print ("\nRetry:",retry,"Error:",error)
@@ -711,69 +711,69 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         if error == 'None':
             
             #if bool (prevMetrics):
-            if prevMetrics.get (host+'-'+'NodeHealth'):
-                if (prevMetrics[host+'-'+'NodeHealth'] != host_health):
-                    prevMetrics[host+'-'+'NodeHealth'] = host_health
-                    mon_data_dict = build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'NodeHealth'] = host_health
-                mon_data_dict = build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get (host+'-'+'NodeHealth'):
+            #     if (prevMetrics[host+'-'+'NodeHealth'] != host_health):
+            #         prevMetrics[host+'-'+'NodeHealth'] = host_health
+            #         mon_data_dict = build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error)
+            #         json_node_list.append(mon_data_dict)
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'NodeHealth'] = host_health
+            mon_data_dict = build_host_health_metric(metricTimeStamp,host_health,tot_time,host,retry,error)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host, checkType, error])
 
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'CPUHealth'):
-                if (prevMetrics[host+'-'+'CPUHealth'] != cpu_health):
-                    prevMetrics[host+'-'+'CPUHealth'] = cpu_health
-                    mon_data_dict = build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'CPUHealth'] = cpu_health
-                mon_data_dict = build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'CPUHealth'):
+            #     if (prevMetrics[host+'-'+'CPUHealth'] != cpu_health):
+            #         prevMetrics[host+'-'+'CPUHealth'] = cpu_health
+            #         mon_data_dict = build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error)
+            #         json_node_list.append(mon_data_dict)
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'CPUHealth'] = cpu_health
+            mon_data_dict = build_cpu_health_metric(metricTimeStamp,cpu_health,tot_time,host,retry,error)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host, checkType, error])
 
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'MemHealth'):
-                if (prevMetrics[host+'-'+'MemHealth'] != mem_health):
-                    prevMetrics[host+'-'+'MemHealth'] = mem_health
-                    mon_data_dict = build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'MemHealth'] = mem_health
-                mon_data_dict = build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'MemHealth'):
+            #     if (prevMetrics[host+'-'+'MemHealth'] != mem_health):
+            #         prevMetrics[host+'-'+'MemHealth'] = mem_health
+            #         mon_data_dict = build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error)
+            #         json_node_list.append(mon_data_dict)
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'MemHealth'] = mem_health
+            mon_data_dict = build_mem_health_metric(metricTimeStamp,mem_health,tot_time,host,retry,error)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host, checkType, error])
 
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'IndicatorLEDStatus'):
-                if (prevMetrics[host+'-'+'IndicatorLEDStatus'] != host_led_indicator):
-                    prevMetrics[host+'-'+'IndicatorLEDStatus'] = host_led_indicator
-                    mon_data_dict = build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'IndicatorLEDStatus'] = host_led_indicator
-                mon_data_dict = build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'IndicatorLEDStatus'):
+            #     if (prevMetrics[host+'-'+'IndicatorLEDStatus'] != host_led_indicator):
+            #         prevMetrics[host+'-'+'IndicatorLEDStatus'] = host_led_indicator
+            #         mon_data_dict = build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error)
+            #         json_node_list.append(mon_data_dict)
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'IndicatorLEDStatus'] = host_led_indicator
+            mon_data_dict = build_led_indicator_metric(metricTimeStamp,host_led_indicator,tot_time,host,retry,error)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host, checkType, error])
 
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'PowerState'):
-                if (prevMetrics[host+'-'+'PowerState'] != host_power_state):
-                    prevMetrics[host+'-'+'PowerState'] = host_power_state
-                    mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
-                    json_node_list.append(mon_data_dict)
-                    error_list.append([host, checkType, error])
-            else:
-                prevMetrics[host+'-'+'PowerState'] = host_power_state
-                mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host, checkType, error])
+            # if prevMetrics.get(host+'-'+'PowerState'):
+            #     if (prevMetrics[host+'-'+'PowerState'] != host_power_state):
+            #         prevMetrics[host+'-'+'PowerState'] = host_power_state
+            #         mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
+            #         json_node_list.append(mon_data_dict)
+            #         error_list.append([host, checkType, error])
+            # else:
+            #     prevMetrics[host+'-'+'PowerState'] = host_power_state
+            mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host, checkType, error])
         
         # else:
         #     retry += 1
@@ -874,17 +874,17 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
 
         if error == 'None':
             # if bool (prevMetrics):
-            if prevMetrics.get(host+'-'+'BMCHealth'):
-                if (prevMetrics[host+'-'+'BMCHealth'] != bmc_health):
-                    prevMetrics[host+'-'+'BMCHealth'] = bmc_health                                                                                                                                                                 
-                    mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
-                    json_node_list.append(mon_data_dict)                                                                                                                                          
-                    error_list.append([host, checkType, error])
-                else:
-                    prevMetrics[host+'-'+'BMCHealth'] = bmc_health                                                                                                                                                                 
-                    mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
-                    json_node_list.append(mon_data_dict)                                                                                                                                          
-                    error_list.append([host, checkType, error])      
+            # if prevMetrics.get(host+'-'+'BMCHealth'):
+            #     if (prevMetrics[host+'-'+'BMCHealth'] != bmc_health):
+            #         prevMetrics[host+'-'+'BMCHealth'] = bmc_health                                                                                                                                                                 
+            #         mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
+            #         json_node_list.append(mon_data_dict)                                                                                                                                          
+            #         error_list.append([host, checkType, error])
+            #     else:
+            #         prevMetrics[host+'-'+'BMCHealth'] = bmc_health                                                                                                                                                                 
+            mon_data_dict = build_bmc_health_metric(metricTimeStamp,bmc_health,tot_time,host,retry,error)                                                                                                            
+            json_node_list.append(mon_data_dict)                                                                                                                                          
+            error_list.append([host, checkType, error])      
         else:
             error_list.append([host, checkType, error])                                                                                                                              
         # else:                                                                                                                                                                              
@@ -1442,17 +1442,17 @@ def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
     if hostinfo['resourceNumericValues'].get('np_load_avg') != None:
         cpu_usage = hostinfo['resourceNumericValues']['np_load_avg']
         #if bool (prevMetrics):
-        if prevMetrics.get(host_ip+'-'+'CPUUsage'):
-            if (prevMetrics[host_ip+'-'+'CPUUsage'] != cpu_usage):
-                prevMetrics[host_ip+'-'+'CPUUsage'] = cpu_usage
-                mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host_ip, checkType, 'None'])
-        else:
-            prevMetrics[host_ip+'-'+'CPUUsage'] = cpu_usage
-            mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host_ip, checkType, 'None'])
+        # if prevMetrics.get(host_ip+'-'+'CPUUsage'):
+        #     if (prevMetrics[host_ip+'-'+'CPUUsage'] != cpu_usage):
+        #         prevMetrics[host_ip+'-'+'CPUUsage'] = cpu_usage
+        #         mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host_ip, checkType, 'None'])
+        # else:
+        #     prevMetrics[host_ip+'-'+'CPUUsage'] = cpu_usage
+        mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
+        json_node_list.append(mon_data_dict)
+        error_list.append([host_ip, checkType, 'None'])
         
         
         total_memory =hostinfo['resourceNumericValues']['m_mem_total']
@@ -1461,17 +1461,17 @@ def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
         used_memory = round(used_memory/float(total_memory[:-1]),2)
         
         # if bool (prevMetrics):
-        if prevMetrics.get(host_ip+'-'+'MemUsage'):
-            if (prevMetrics[host_ip+'-'+'MemUsage'] != used_memory):
-                prevMetrics[host_ip+'-'+'MemUsage'] = used_memory
-                mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
-                json_node_list.append(mon_data_dict)
-                error_list.append([host_ip, checkType, 'None'])
-        else:
-            prevMetrics[host_ip+'-'+'MemUsage'] = used_memory
-            mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
-            json_node_list.append(mon_data_dict)
-            error_list.append([host_ip, checkType, 'None'])
+        # if prevMetrics.get(host_ip+'-'+'MemUsage'):
+        #     if (prevMetrics[host_ip+'-'+'MemUsage'] != used_memory):
+        #         prevMetrics[host_ip+'-'+'MemUsage'] = used_memory
+        #         mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
+        #         json_node_list.append(mon_data_dict)
+        #         error_list.append([host_ip, checkType, 'None'])
+        # else:
+        #     prevMetrics[host_ip+'-'+'MemUsage'] = used_memory
+        mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
+        json_node_list.append(mon_data_dict)
+        error_list.append([host_ip, checkType, 'None'])
 
     else:
         cpu_usage = 0.0
@@ -1932,16 +1932,16 @@ def main():
         
     global userName
     global passwd
-    global prevMetrics
+    # global prevMetrics
 
     userName = bmcCred[0]
     passwd = bmcCred[1]
 
     
-    fName = '/home/production/prevmetrics'
-    if os.path.exists(fName):
-	    with open(fName) as infile:
-		    prevMetrics = json.load(infile)
+    # fName = '/home/production/prevmetrics'
+    # if os.path.exists(fName):
+	#     with open(fName) as infile:
+	# 	    prevMetrics = json.load(infile)
             
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
     # KnownProblematicBMCs = []
@@ -2055,7 +2055,7 @@ def launch (taskList,session,startTime,hostList):
         
     print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(objList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
-    return
+    
         #Power Usage by nodes across cluster:
         #calc_currentnode_power(jsonObjList)
 
@@ -2119,11 +2119,11 @@ def launch (taskList,session,startTime,hostList):
         # storing results in InfluxDBClient                                                                                                                           
     client = InfluxDBClient(host='localhost', port=8086)
     #client.drop_database('test_quanah_db')
-    #client.drop_database('newtest_quanah_db')
-    #client.create_database('newtest_quanah_db')                                                                                                        
+    client.drop_database('newtest_quanah_db')
+    client.create_database('newtest_quanah_db')                                                                                                        
 
     #client.switch_database('hpcc_monitoring_db')
-    #client.switch_database('newtest_quanah_db')
+    client.switch_database('newtest_quanah_db')
                                                                                                                                                
     client.write_points(objList,time_precision='ms')                                                                                                                              
         
