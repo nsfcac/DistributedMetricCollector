@@ -1961,12 +1961,12 @@ def main():
     # Also note that 'HPCJob' check is not part of iDRAC rather it uses Univa Grid Engine (UGE) REST API to enquire the job related metrics running in the HPC 
     
     #REMOVEME
-    checkList = ['SystemHealth','Thermal','Power','MEMPWR','CPUPWR']
+    checkList = ['Thermal','Power']
 
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['BMCHealth','HPCJob','MEMPWR','CPUPWR']
+    checkList = ['SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
