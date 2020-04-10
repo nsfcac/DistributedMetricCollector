@@ -2267,7 +2267,7 @@ def nagios_external_agent(jsonObjList, error_list):
             check_service_description = jsonObj['tags']['Sensor']
         
         if jsonObj['measurement'] == "NodeJobs":
-            check_service_description = "NodeJobs"
+            check_service_description = "JobList"
 
         return_code = None
         output = ""
@@ -2404,7 +2404,7 @@ def nagios_external_agent(jsonObjList, error_list):
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
-        elif(check_service_description == "NodeJobs"):
+        elif(check_service_description == "JobList"):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
