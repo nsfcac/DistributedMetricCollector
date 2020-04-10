@@ -310,7 +310,7 @@ def get_hpcjob_data(conn_time_out,read_time_out,session):
 # 3) Build metric(s)
 ##############################################################################################
 
-def getNodesData (host, checkType, json_node_list, error_list,session,metricTimeStamp,prevMetrics):
+def getNodesData (host, checkType, json_node_list, error_list,session,metricTimeStamp):
     
     error=""
     # Based on our experience, 13G iDRAC takes 3 to 5 seconds to process a Redfish API call so
@@ -318,6 +318,8 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
     conn_time_out=30
     read_time_out=50
 
+    global prevMetrics
+    
 
     # Fetch the monitoring data based on check type                                                                                                               
 
@@ -934,7 +936,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         if error == 'None':
             #timeStamp = int(datetime.now().timestamp())
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
-            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,metricTimeStamp,prevMetrics)
+            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,metricTimeStamp)
 
 ###############################################################################################                                                                                                               
 # Builds CPU power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
@@ -976,7 +978,7 @@ def build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_us
     # mon_data_dict['time'] = metricTimeStamp
     # return mon_data_dict
             
-def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp,prevMetrics):
+def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
     jsonJobList = []
     userNames = []
     jobsID = []
@@ -998,7 +1000,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
         if node != None:
-            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp,prevMetrics)
+            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
                 continue
@@ -1433,7 +1435,10 @@ def calc_currentnode_power(client):
 ###############################################################################################                                              
 # Build memory usage and CPU usage metrics from job data                                                                                      
 ###############################################################################################                                               
-def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp,prevMetrics):
+def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
+    
+    global prevMetrics
+    
     if hostinfo['resourceNumericValues'].get('np_load_avg') != None:
         cpu_usage = hostinfo['resourceNumericValues']['np_load_avg']
         #if bool (prevMetrics):
@@ -1811,7 +1816,7 @@ def build_power_usage_metric(metricTimeStamp,power_usage,host):
 # Each thread calls getNodesData function passes the host and corresponding check,        #
 # json_node_list, error_list, and session object.                                                                                     
 ###########################################################################################
-def core_to_threads (input_data,session,ts,prevMetrics):
+def core_to_threads (input_data,session,ts):
     
     warnings.filterwarnings('ignore', '.*', UserWarning,'warnings_filtering',)
     try:
@@ -1824,7 +1829,7 @@ def core_to_threads (input_data,session,ts,prevMetrics):
             host = host_info[0]
             checkType = host_info[1]
             
-            a = Thread(target = getNodesData, args=(host, checkType, json_node_list, error_list,session, ts,prevMetrics,))
+            a = Thread(target = getNodesData, args=(host, checkType, json_node_list, error_list,session, ts,))
             threads.append(a)
             threads[thread_id].start()
             thread_id += 1
@@ -1845,8 +1850,8 @@ def core_to_threads (input_data,session,ts,prevMetrics):
 # each and last one (8th) will have 61. The remainder will be added to last core.         #
 ###########################################################################################
 
-def  parallelizeTasks (input_data,session,ts,prevMetrics):
-    
+def  parallelizeTasks (input_data,session,ts):
+
     warnings.filterwarnings('ignore', '.*', UserWarning,'warnings_filtering',)
     try:
         #nodes = len(input_data)
@@ -1888,7 +1893,7 @@ def  parallelizeTasks (input_data,session,ts,prevMetrics):
 
         #print (len(jobs),jobs)
         # Run parallel jobs across all the cores by calling core_to_threads
-        results = [pool.apply_async( core_to_threads, args=(j,session,ts,prevMetrics,) ) for j in jobs]
+        results = [pool.apply_async( core_to_threads, args=(j,session,ts,) ) for j in jobs]
 
         # Process results
         for result in results:
@@ -1927,6 +1932,7 @@ def main():
         
     global userName
     global passwd
+    global prevMetrics
 
     userName = bmcCred[0]
     passwd = bmcCred[1]
@@ -1979,9 +1985,9 @@ def main():
         for host in hostList:
             taskList.append([host,check])
     
-    launch (taskList,session,startTime,hostList,prevMetrics)   
+    launch (taskList,session,startTime,hostList)   
 
-def launch (taskList,session,startTime,hostList,prevMetrics):    
+def launch (taskList,session,startTime,hostList):    
 #def launch(hostList,checkList, taskList,session,iteration):
     #ts = datetime.now() + timedelta(seconds=5)
     #ts = ts.isoformat()
@@ -2007,8 +2013,8 @@ def launch (taskList,session,startTime,hostList,prevMetrics):
     '''
 
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
-    objList, error_list =  parallelizeTasks(taskList,session,ts,prevMetrics)
-    savePrevMets(prevMetrics)
+    objList, error_list =  parallelizeTasks(taskList,session,ts)
+    savePrevMets()
     #print("\nstart cluster metric\n")
     #print (objList)
     #print("\nstart cluster metric\n") 
@@ -2167,7 +2173,8 @@ def launch (taskList,session,startTime,hostList,prevMetrics):
         #nodes_data, error_list =  getNodeData(input_data)                                                                                                            
     '''
 
-def savePrevMets(prevMetrics):
+def savePrevMets():
+    global prevMetrics
     print("\n Total Saved data points: ", len(prevMetrics))
     fName = '/home/production/prevmetrics'
     with open(fName, 'w') as outfile:
