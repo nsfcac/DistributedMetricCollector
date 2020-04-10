@@ -1857,7 +1857,6 @@ def launch (taskList,session,startTime,hostList):
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     #jsonObjList = objList
-    # print ("\n\nMetrics:",objList)
          
         
         # Log of (sheets) responses is created for all checks except HPCJob
@@ -2261,13 +2260,12 @@ def nagios_external_agent(jsonObjList, error_list):
         #host =  jsonObj['tags']['host']
         #jsonObj =  jsonObjList [i]
         #error = error_list [i]
-        print (jsonObj)
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
 
         if jsonObj['tags'].get('Sensor') != None:
             check_service_description = jsonObj['tags']['Sensor']
-
+        print (check_service_description)
         return_code = None
         output = ""
         timestamp = int(time.time())
