@@ -2256,11 +2256,11 @@ def nagios_external_agent(jsonObjList, error_list):
     
     nagios_cmd = open("/usr/local/nagios/var/rw/nagios.cmd", "w")
     
-    for i in range(len(jsonObjList)):
+    for jsonObj in jsonObjList:
     #for jsonObj,error in zip(jsonObjList,error_list):
         #host =  jsonObj['tags']['host']
-        jsonObj =  jsonObjList [i]
-        error = error_list [i]
+        #jsonObj =  jsonObjList [i]
+        #error = error_list [i]
 
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
