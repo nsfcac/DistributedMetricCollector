@@ -1454,9 +1454,10 @@ def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
         #         error_list.append([host_ip, checkType, 'None'])
         # else:
         #     prevMetrics[host_ip+'-'+'CPUUsage'] = cpu_usage
-        mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
-        json_node_list.append(mon_data_dict)
-        error_list.append([host_ip, checkType, 'None'])
+        if cpu_usage != None:
+            mon_data_dict = build_cpu_usage_metric(cpu_usage,host_ip,'None',timeStamp)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host_ip, checkType, 'None'])
         
         
         total_memory =hostinfo['resourceNumericValues']['m_mem_total']
@@ -1473,9 +1474,10 @@ def jobLoad (hostinfo,host_ip,json_node_list,error_list,checkType,timeStamp):
         #         error_list.append([host_ip, checkType, 'None'])
         # else:
         #     prevMetrics[host_ip+'-'+'MemUsage'] = used_memory
-        mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
-        json_node_list.append(mon_data_dict)
-        error_list.append([host_ip, checkType, 'None'])
+        if used_memory != None:
+            mon_data_dict = build_memory_usage_metric(total_memory, available_memory,used_memory,host_ip,'None',timeStamp)
+            json_node_list.append(mon_data_dict)
+            error_list.append([host_ip, checkType, 'None'])
 
     else:
         cpu_usage = 0.0
