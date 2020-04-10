@@ -1075,7 +1075,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     client1 = InfluxDBClient(host='localhost', port=8086)
     client1.switch_database('newtest_quanah_db')
 
-    # updateFinishedJobs (finishedJobs, client1, timeStamp)
+    updateFinishedJobs (finishedJobs, client1, timeStamp)
             
     #print (jsonJobList)
     for jj in jsonJobList:
@@ -1966,7 +1966,7 @@ def main():
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['Thermal','Power','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
+    checkList = ['Power','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
