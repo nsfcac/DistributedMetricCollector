@@ -2408,7 +2408,7 @@ def nagios_external_agent(jsonObjList, error_list):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
-            print ("\nTotal element: ",len(jsonObj))
+            print ("\nNode Job: ",jsonObj)
             output = jsonObj
             return_code=0
             #if error[2] != 'None':
