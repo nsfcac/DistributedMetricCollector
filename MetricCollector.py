@@ -268,7 +268,8 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         #pwr_thresholds.update ({'PowerAllocatedWatts':data['PowerControl'][0][u'PowerAllocatedWatts']})
         try:
             if u'PowerControl' in data:
-                if u'PowerConsumedWatts' in data[u'PowerControl'][0]:    
+                if u'PowerConsumedWatts' in data[u'PowerControl'][0]:
+                    print (data[u'PowerControl'][0][u'PowerConsumedWatts'])    
                     return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
                 else:
                     return None, None, str(None)
@@ -1961,12 +1962,14 @@ def main():
     # Also note that 'HPCJob' check is not part of iDRAC rather it uses Univa Grid Engine (UGE) REST API to enquire the job related metrics running in the HPC 
     
     #REMOVEME
-    # checkList = ['Power',]
+    
+    checkList = ['Power']
 
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
-    checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
+    
+    # checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
