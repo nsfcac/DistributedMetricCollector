@@ -2261,7 +2261,7 @@ def nagios_external_agent(jsonObjList, error_list):
         #host =  jsonObj['tags']['host']
         #jsonObj =  jsonObjList [i]
         #error = error_list [i]
-
+        print (jsonObj)
         if jsonObj['tags'].get('NodeId') != None:
             host =  jsonObj['tags']['NodeId']
 
