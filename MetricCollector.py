@@ -1909,6 +1909,7 @@ def  parallelizeTasks (input_data,session,ts,prevMetrics):
 
 userName = ""
 passwd = ""
+prevMetrics = {}
 
 def main():
     
@@ -1930,7 +1931,7 @@ def main():
     userName = bmcCred[0]
     passwd = bmcCred[1]
 
-    prevMetrics = {}
+    
     fName = '/home/production/prevmetrics'
     if os.path.exists(fName):
 	    with open(fName) as infile:
