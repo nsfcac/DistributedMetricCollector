@@ -2275,25 +2275,27 @@ def nagios_external_agent(jsonObjList, error_list):
 
         if(check_service_description == "NodeHealth"):
             
-            if error[2] != 'None':
-                output = error[2]
-                return_code = 3
+            
+            if jsonObj['fields'].get('Reading') != None:
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                return_code = 0
+                output = jsonObj
             else:
-                if jsonObj['fields'].get('Reading') != None:
-                    health_status =jsonObj['fields']['Reading']
-                    return_code, output = return_output(health_status,check_service_description,error[2])
-                    output = jsonObj
+                output = "Metric Unavailable!"
+                return_code = 3
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "PowerState"):
             
             if jsonObj['fields'].get('Reading') != None:
-                health_status =jsonObj['fields']['Reading']
-                return_code, output = return_output(health_status,check_service_description,error[2])
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                return_code = 0
                 output = jsonObj              
             else:
-                output = error[2]
+                output = "Metric Unavailable!"
                 return_code = 3
             
             
@@ -2307,80 +2309,97 @@ def nagios_external_agent(jsonObjList, error_list):
 
         elif(check_service_description == "IndicatorLEDStatus"):
             
-            if error[2] != 'None':
-                output = error[2]
-                return_code = 3
+            # # if error[2] != 'None':
+            # #     output = "Metric Unavailable!"
+            # #     return_code = 3
+            # else:
+            if jsonObj['fields'].get('Reading') != None:
+                    # indicator =jsonObj['fields']['Reading']
+                    
+                    # if indicator == "Lit":
+                    #     return_code = 2
+                    #     output = "Node Indicator LED status is Lit!"
+
+                    # elif indicator == "Blinking":
+                    #     return_code = 1
+                    #     output = "Node Indicator LED status is Blinking!"
+                    
+                    # elif indicator == "Off":
+                    #     return_code = 0
+                    #     output = "Node Indicator LED status is Off!"
+
+                    # elif indicator == "Unknown":
+                    #     return_code = 3
+                    #     output = "Node Indicator LED status is unknown!"
+                output = jsonObj
+                return_code = 0
             else:
-                if jsonObj['fields'].get('Reading') != None:
-                    indicator =jsonObj['fields']['Reading']
-                    
-                    if indicator == "Lit":
-                        return_code = 2
-                        output = "Node Indicator LED status is Lit!"
-
-                    elif indicator == "Blinking":
-                        return_code = 1
-                        output = "Node Indicator LED status is Blinking!"
-                    
-                    elif indicator == "Off":
-                        return_code = 0
-                        output = "Node Indicator LED status is Off!"
-
-                    elif indicator == "Unknown":
-                        return_code = 3
-                        output = "Node Indicator LED status is unknown!"
-                    output = jsonObj
+                output = "Metric Unavailable!"
+                return_code = 3
             
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "InletHealth"):
-            if error[2] == 'None':
-                if jsonObj['fields'].get('Reading') != None:
-                    health_status =jsonObj['fields']['Reading']
-                    return_code, output = return_output(health_status,check_service_description,error[2])
-                    output = jsonObj
+            # if error[2] == 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                output = jsonObj
+                return_code = 0
             else:
-                output = error[2]
+                output = "Metric Unavailable!"
                 return_code = 3
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "BMCHealth"):
             
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            if jsonObj['fields'].get('Reading') != None:
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                return_code = 0
+                output = jsonObj
             else:
-                if jsonObj['fields'].get('Reading') != None:
-                    health_status =jsonObj['fields']['Reading']
-                    return_code, output = return_output(health_status,check_service_description,error[2])
-                    output = jsonObj
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "CPUHealth"):
             
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            if jsonObj['fields'].get('Reading') != None:
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                return_code = 0
+                output = jsonObj
             else:
-                if jsonObj['fields'].get('Reading') != None:
-                    health_status =jsonObj['fields']['Reading']
-                    return_code, output = return_output(health_status,check_service_description,error[2])
-                    output = jsonObj
+                return_code = 3
+                output = "Metric Unavailable!"
             
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "MemHealth"):
 
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            if jsonObj['fields'].get('Reading') != None:
+                # health_status =jsonObj['fields']['Reading']
+                # return_code, output = return_output(health_status,check_service_description,error[2])
+                return_code = 0
+                output = jsonObj
             else:
-                if jsonObj['fields'].get('Reading') != None:
-                    health_status =jsonObj['fields']['Reading']
-                    return_code, output = return_output(health_status,check_service_description,error[2])
-                    output = jsonObj
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
@@ -2388,7 +2407,7 @@ def nagios_external_agent(jsonObjList, error_list):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
             #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
-            print("\HOSTJ",host)
+            
             output = jsonObj
             return_code=0
             #if error[2] != 'None':
@@ -2403,17 +2422,17 @@ def nagios_external_agent(jsonObjList, error_list):
             # *** Missing the OK/Warning/Critical thresholds ***
             #return_code, output = return_output(health_status,check_service_description)
             
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
-            else:
+            if jsonObj['fields'].get('Reading') != None:
                 output=jsonObj
                 return_code=0
+            else:
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "NodePower"):
-            print("\HOSTP",host)
+            
             #power_usage =jsonObj['fields']['Reading']
             
             # *** Applying OK/Warning/Critical thresholds ***
@@ -2427,12 +2446,13 @@ def nagios_external_agent(jsonObjList, error_list):
             #         return_code=2
             # else:
             #     return_code = 3
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
-            else:
+            if jsonObj['fields'].get('Reading') != None:
                 output = jsonObj
                 return_code=0
+            else:
+                return_code = 3
+                output = "Metric Unavailable!"
+                
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2445,13 +2465,19 @@ def nagios_external_agent(jsonObjList, error_list):
             #output="Total Memory: "+str(total_mem)+" Used Memory: "+str(mem_used)+" Avaiable Memory: "+str(avail_mem)
             
             #return_code, output = return_output(health_status,check_service_description)
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
-            else:
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            #     output = jsonObj
+            #     return_code=0
+            if jsonObj['fields'].get('Reading') != None:
                 output = jsonObj
                 return_code=0
-            
+            else:
+                return_code = 3
+                output = "Metric Unavailable!"
+
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
         elif(check_service_description == "CPU1Temp"):
@@ -2479,12 +2505,19 @@ def nagios_external_agent(jsonObjList, error_list):
             #         status_codes.append(3)
             # else:
             #     status_codes.append(3)
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
-            else:
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            #     return_code=0
+            #     output =jsonObj
+
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
                 return_code=0
-                output =jsonObj
+            else:
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2492,12 +2525,19 @@ def nagios_external_agent(jsonObjList, error_list):
 
             # *** Applying the OK/Warning/Critical thresholds ***                                                                                                                                                          
             
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
-            else:
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            #     return_code=0
+            #     output =jsonObj
+
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
                 return_code=0
-                output =jsonObj
+            else:
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2517,12 +2557,19 @@ def nagios_external_agent(jsonObjList, error_list):
             # else:
             #     return_code = 3
 
-            if error[2] != 'None':
-                return_code = 3
-                output = error[2]
+            # if error[2] != 'None':
+            #     return_code = 3
+            #     output = "Metric Unavailable!"
+            # else:
+            #     return_code = 0
+            #     output =jsonObj
+
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
             else:
-                return_code = 0
-                output =jsonObj
+                return_code = 3
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
@@ -2553,117 +2600,116 @@ def nagios_external_agent(jsonObjList, error_list):
             # else:
             #     status_codes.append(3)
 
-            output =jsonObj
-            return_code = 0
-
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
         elif(check_service_description == "FAN_2Speed"):
             
-            output =jsonObj
-            return_code = 0
-
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "FAN_3Speed"):
             
-            output =jsonObj
-            return_code = 0
-
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "FAN_4Speed"):
             
-            output =jsonObj
-            return_code = 0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "FAN_1Health"):
                 
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
 
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "FAN_2Health"):
                 
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
                     
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "FAN_3Health"):
                 
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
                     
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
         
         elif(check_service_description == "FAN_4Health"):
                 
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = error[2]
+                output = "Metric Unavailable!"
                     
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
             
         elif(check_service_description == "MemPowerUsage"):
-            print("\HOSTMEMP",host)   
+            
                 # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = "Plugin Not Installed!"
+                output = "Metric Unavailable!"
                     
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
         elif(check_service_description == "CPUPowerUsage"):
-            print("\HOSTCPUP",host)
-                # *** Missing the OK/Warning/Critical thresholds ***                                                                                                      
-            output =jsonObj
-            return_code=0
-                
-            if error[2] != 'None':
+
+            if jsonObj['fields'].get('Reading') != None:
+                output = jsonObj
+                return_code=0
+            else:
                 return_code = 3
-                output = "Plugin Not Installed!"
+                output = "Metric Unavailable!"
                     
             update_service (host,timestamp,check_service_description,return_code,output,nagios_cmd )
 
