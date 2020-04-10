@@ -933,7 +933,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
         if error == 'None':
             #timeStamp = int(datetime.now().timestamp())
             #getJobInfo(job_data,error,json_node_list,error_list,checkType,timeStamp)
-            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,metricTimeStamp)
+            build_jobs_metric (job_data,error,json_node_list,error_list,checkType,metricTimeStamp,prevMetrics)
 
 ###############################################################################################                                                                                                               
 # Builds CPU power usages in watts metric by encapsulating the power usage and other infos into dictionary                                                                                                        
@@ -975,7 +975,7 @@ def build_mempower_usage_metric(metricTimeStamp,mem_cur_pwr_usage,mem_max_pwr_us
     # mon_data_dict['time'] = metricTimeStamp
     # return mon_data_dict
             
-def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp):
+def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeStamp,prevMetrics):
     jsonJobList = []
     userNames = []
     jobsID = []
@@ -997,7 +997,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     for hostinfo in job_data:
         node = get_hostip(hostinfo['hostname'].split('.')[0])
         if node != None:
-            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp)
+            jobLoad (hostinfo, node,json_node_list,error_list,checkType,timeStamp,prevMetrics)
         for j in hostinfo['jobList']:
             if (j['masterQueue'] == 'MASTER'):
                 continue
@@ -1932,7 +1932,7 @@ def main():
     prevMetrics = {}
     fName = '/home/production/prevmetrics'
     if os.path.exists(fName):
-	    with open('prevmetrics') as infile:
+	    with open(fName) as infile:
 		    prevMetrics = json.load(infile)
             
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
@@ -2006,7 +2006,7 @@ def launch (taskList,session,startTime,hostList,prevMetrics):
 
         #The tasklist and session object is passed to the following function which returns list of hosts monitoring data and errors
     objList, error_list =  parallelizeTasks(taskList,session,ts,prevMetrics)
-    
+    savePrevMets(prevMetrics)
     #print("\nstart cluster metric\n")
     #print (objList)
     #print("\nstart cluster metric\n") 
@@ -2164,6 +2164,13 @@ def launch (taskList,session,startTime,hostList,prevMetrics):
         print("\n\n--- Total Execution Time: %s seconds ---" % (time.time() - startTime))
         #nodes_data, error_list =  getNodeData(input_data)                                                                                                            
     '''
+
+def savePrevMets(prevMetrics):
+    print("\n Total Saved data points: ", len(prevMetrics))
+    fName = '/home/production/prevmetrics'
+    with open(fName, 'w') as outfile:
+        json.dump(prevMetrics, outfile)
+
 def build_cluster_metric (objList,hostList,ts):
     #mon_data_dict = {'measurement':'cluster_unified_metrics','tags':{'cluster':'quanah','host':None,'location':'ESB'},'time':ts,'fields':{'power_state':None,'cluster_jobs_pwr_usage_watts':None,'cluster_nodes_pwr_usage_watts':None,'jobID':None,'CPUCores':None,'led_indicator':None,'bmc_health_status':None,'inlet_health_status':None,'host_health_status':None,'cpu_health_status':None,'memory_health_status':None,'cpuusage':None,'memoryusage':None,'fan1_health':None,'fan2_health':None,'fan3_health':None,'fan4_health':None,'fan1_speed':None,'fan2_speed':None,'fan3_speed':None,'fan4_speed':None,'CPU1_temp':None,'CPU2_temp':None,'inlet_health':None,'inlet_temp':None,'powerusage_watts':None}}
     jsonObjSystemMetricList = []
