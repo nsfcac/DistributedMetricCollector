@@ -774,7 +774,7 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
                 mon_data_dict = build_power_state_metric(metricTimeStamp,host_power_state,tot_time,host,retry,error)
                 json_node_list.append(mon_data_dict)
                 error_list.append([host, checkType, error])
-        print ("\nsystem-prev-met:",prevMetrics)
+        
         # else:
         #     retry += 1
         #     #print ("\nRetry:",retry,"Error:",error)                                                                                                                                      
@@ -2175,7 +2175,7 @@ def launch (taskList,session,startTime,hostList):
 
 def savePrevMets():
     global prevMetrics
-    print("\n Total Saved data points: ", len(prevMetrics))
+    #print("\n Total Saved data points: ", len(prevMetrics))
     fName = '/home/production/prevmetrics'
     with open(fName, 'w') as outfile:
         json.dump(prevMetrics, outfile)
