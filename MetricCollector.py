@@ -2055,7 +2055,7 @@ def launch (taskList,session,startTime,hostList):
         
     print("\n Total Time in executing total tasks: ",len(taskList), " Output: ", len(objList),"is: "," %s Seconds " % round((time.time() - startTime),2))
     #print ("\n\nTotal measures: ",len(jsonObjList))
-    return    
+     
         #Power Usage by nodes across cluster:
         #calc_currentnode_power(jsonObjList)
 
@@ -2119,12 +2119,12 @@ def launch (taskList,session,startTime,hostList):
         # storing results in InfluxDBClient                                                                                                                           
     client = InfluxDBClient(host='localhost', port=8086)
     #client.drop_database('test_quanah_db')
-    #client.create_database('test_quanah_db')                                                                                                        
+    client.create_database('newtest_quanah_db')                                                                                                        
 
     #client.switch_database('hpcc_monitoring_db')
-    client.switch_database('test_quanah_db')
+    client.switch_database('newtest_quanah_db')
                                                                                                                                                
-    client.write_points(jsonObjList,time_precision='ms')                                                                                                                              
+    client.write_points(objList,time_precision='ms')                                                                                                                              
         
         
 
