@@ -1969,7 +1969,7 @@ def main():
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
     
-    # checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
+    checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
