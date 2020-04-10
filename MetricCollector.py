@@ -1075,7 +1075,7 @@ def build_jobs_metric (job_data,error,json_node_list,error_list,checkType,timeSt
     client1 = InfluxDBClient(host='localhost', port=8086)
     client1.switch_database('newtest_quanah_db')
 
-    updateFinishedJobs (finishedJobs, client1, timeStamp)
+    # updateFinishedJobs (finishedJobs, client1, timeStamp)
             
     #print (jsonJobList)
     for jj in jsonJobList:
