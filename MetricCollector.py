@@ -2411,8 +2411,7 @@ def nagios_external_agent(jsonObjList, error_list):
         elif(check_service_description == "NodeJobs"):
             #print ("\ncheck_service_description",check_service_description)                                                                                                                                 
             # *** Missing the OK/Warning/Critical thresholds ***                                                                                                                                             
-            #return_code, output = return_output(health_status,check_service_description)                                                                                                                    
-            print ("\nNode Job: ",jsonObj)
+            #return_code, output = return_output(health_status,check_service_description)                                                                                                                 
             output = jsonObj
             return_code=0
             #if error[2] != 'None':
@@ -2728,7 +2727,7 @@ def update_service (host,timestamp,check_service_description,return_code,output,
                       return_code = return_code,
                       text = output))
 
-    print ("\nNagiosW: ",check_service_description)
+    
 
             
 def return_output (health_status,service_description,error):
