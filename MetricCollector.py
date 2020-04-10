@@ -1918,7 +1918,7 @@ def main():
     if os.path.exists(fName):
 	    with open('prevmetrics') as infile:
 		    prevMetrics = json.load(infile)
-            infile.close()
+            
     #The following is list of IP address of known problematic BMCs which are under maintenance and excluded from montioring:
     # KnownProblematicBMCs = []
     # This tool shares the session for DIFFERENT Redfish API calls and DIFFERENT iDracs
