@@ -267,11 +267,12 @@ def get_powerusage(host,conn_time_out,read_time_out,session):
         #pwr_thresholds.update ({'PowerLimit':data['PowerControl'][0][u'PowerLimit']})
         #pwr_thresholds.update ({'PowerAllocatedWatts':data['PowerControl'][0][u'PowerAllocatedWatts']})
         try:
-            if u'PowerControl' in data:
-                if u'PowerConsumedWatts' in data[u'PowerControl'][0]:    
-                    return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
-                else:
-                    return None, None, str(None)
+            # if u'PowerControl' in data:
+            #     if u'PowerConsumedWatts' in data[u'PowerControl'][0]:    
+            #         return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
+            #     else:
+            #         return None, None, str(None)
+            return data[u'PowerControl'][0][u'PowerConsumedWatts'], pwr_thresholds, str(None)
         except:
             return None, None, str(None)
     except requests.exceptions.RequestException as e:
@@ -1962,13 +1963,13 @@ def main():
     
     #REMOVEME
     
-    #checkList = ['Power']
+    checkList = ['Power']
 
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
     
-    checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR','Power']
+    #checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR','Power']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
