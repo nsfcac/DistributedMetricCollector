@@ -316,8 +316,8 @@ def getNodesData (host, checkType, json_node_list, error_list,session,metricTime
     error=""
     # Based on our experience, 13G iDRAC takes 3 to 5 seconds to process a Redfish API call so
     # so in order to make monitoring more responsive, initial timeout is set to minimum
-    conn_time_out=30
-    read_time_out=30
+    conn_time_out=15
+    read_time_out=15
 
     # global prevMetrics
     
@@ -2058,7 +2058,7 @@ def launch (taskList,session,startTime,hostList):
     
        
     # PUSH DATA TO NAGIOS IN PASSIVE MODE
-    nagios_external_agent(objList, error_list)
+    #nagios_external_agent(objList, error_list)
     
     
     #TESTING START
@@ -2076,7 +2076,8 @@ def launch (taskList,session,startTime,hostList):
     taskList.clear()
     
         
-        
+     return
+
     '''
         # No of failed requests
         failed_reqs=0
