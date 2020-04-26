@@ -2129,7 +2129,7 @@ def launch (taskList,session,startTime,hostList):
     client = InfluxDBClient(host='localhost', port=8086)
     #client.drop_database('test_quanah_db')
     #client.drop_database('newtest_quanah_db')
-    #client.create_database('newtest_quanah_db')                                                                                                        
+    client.create_database('newtest_quanah_db')                                                                                                        
 
     #client.switch_database('hpcc_monitoring_db')
     client.switch_database('newtest_quanah_db')
