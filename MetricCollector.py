@@ -2058,7 +2058,7 @@ def launch (taskList,session,startTime,hostList):
     
        
     # PUSH DATA TO NAGIOS IN PASSIVE MODE
-    #nagios_external_agent(objList, error_list)
+    nagios_external_agent(objList, error_list)
     
     
     #TESTING START
@@ -2076,7 +2076,7 @@ def launch (taskList,session,startTime,hostList):
     taskList.clear()
     
         
-     return
+    return
 
     '''
         # No of failed requests
