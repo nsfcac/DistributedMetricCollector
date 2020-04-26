@@ -1811,9 +1811,9 @@ def build_inlet_temperature_metric(metricTimeStamp,inlet_key,inlet_val, host):
 
 def build_power_usage_metric(metricTimeStamp,power_usage,host):
     if power_usage == None or power_usage == 'None':
-        power_usage = 0
+        power_usage = 0.0
     mon_data_dict = {'measurement':'Power','tags':{'Sensor':'NodePower','NodeId':host},'time':metricTimeStamp,'fields':{}}
-    mon_data_dict['fields']['Reading'] = power_usage
+    mon_data_dict['fields']['Reading'] = float(power_usage)
     return mon_data_dict
     
 
