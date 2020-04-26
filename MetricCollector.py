@@ -2075,8 +2075,6 @@ def launch (taskList,session,startTime,hostList):
         # clear the task list
     taskList.clear()
     
-        
-    return
 
     '''
         # No of failed requests
@@ -2130,13 +2128,13 @@ def launch (taskList,session,startTime,hostList):
         # storing results in InfluxDBClient                                                                                                                           
     client = InfluxDBClient(host='localhost', port=8086)
     #client.drop_database('test_quanah_db')
-    client.drop_database('newtest_quanah_db')
-    client.create_database('newtest_quanah_db')                                                                                                        
+    #client.drop_database('newtest_quanah_db')
+    #client.create_database('newtest_quanah_db')                                                                                                        
 
     #client.switch_database('hpcc_monitoring_db')
     client.switch_database('newtest_quanah_db')
                                                                                                                                                
-    client.write_points(objList,time_precision='ms')                                                                                                                              
+    client.write_points(objList,time_precision='s')                                                                                                                              
         
         
 
