@@ -1936,7 +1936,6 @@ def main():
 
     hostList = open('/home/problem_nodes.txt').read().splitlines()
 
-    print(hostList)
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
         bmcCred = json.load(bmc_cred)
@@ -2032,15 +2031,16 @@ def launch (taskList,session,startTime,hostList):
     #print (objList)
     #print("\nstart cluster metric\n") 
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
-    # for obj in objList:
+    print ('\n*****************Output*****************\n')
+    for obj in objList:
     # #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
-    #     print (obj)
-    #     print("\n")
-
-    # for err in error_list:
-    # #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
-    #     print (err)
-    #     print("\n")
+        print (obj)
+        print("\n")
+    print ('\n*****************Errors*****************\n')
+    for err in error_list:
+    # if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+        print (err)
+        print("\n")
     
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
