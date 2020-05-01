@@ -1936,6 +1936,7 @@ def main():
 
     hostList = open('/home/problem_nodes.txt').read().splitlines()
 
+    print(hostList)
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
         bmcCred = json.load(bmc_cred)
