@@ -1931,8 +1931,10 @@ def main():
     hostList = []
     bmcCred = []
 
-    with open('/home/bmc_iplist.txt','r') as bmc_file:
-        hostList=json.load(bmc_file)
+    # with open('/home/bmc_iplist.txt','r') as bmc_file:
+    #     hostList=json.load(bmc_file)
+
+    hostList = open('/home/problem_nodes.txt').read().splitlines()
 
     # Read BMC Credentials:
     with open('/home/bmc_cred.txt','r') as bmc_cred:
@@ -1964,13 +1966,13 @@ def main():
     
     #REMOVEME
     
-    #checkList = ['Power']
+    checkList = ['Power']
 
     # hostList = ['10.101.10.25']
     # For the purpose of this testing, I have excluded the HPCJob metric:
     # checkList = ['SystemHealth','BMCHealth','Thermal','Power']
     
-    checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR','Power']
+    #checkList = ['Thermal','SystemHealth','BMCHealth','HPCJob','MEMPWR','CPUPWR','Power']
     
     '''
     # Checks are iterated 100 times across the TTU HPCC Quanah cluster (467 nodes)
