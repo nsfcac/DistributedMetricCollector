@@ -2044,6 +2044,8 @@ def launch (taskList,session,startTime,hostList):
         print("\n")
     print ('\nTotal Errors:',(len(error_list)))
 
+    return
+    
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     #jsonObjList = objList
