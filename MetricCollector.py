@@ -2033,15 +2033,17 @@ def launch (taskList,session,startTime,hostList):
     #jsonObjList = build_cluster_metric (objList,hostList,ts)
     # print ('\n*****************Output*****************\n')
     # for obj in objList:
-    # # #    if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
+    # # #   if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
     #     print (obj)
     #     print("\n")
+    
     print ('\n*****************Errors*****************\n')
     for err in error_list:
     # if obj["measurement"] == "Power" or obj["measurement"] == "Thermal":
         print (err)
         print("\n")
-    print ('\nTotal Errors:',(len(error_list))
+    print ('\nTotal Errors:',(len(error_list)))
+
     #print ("\n\n LOG :: Total Metrics:",len(objList))
     # jsonObjList += objList
     #jsonObjList = objList
